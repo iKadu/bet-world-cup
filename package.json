@@ -1,0 +1,49 @@
+{
+  "name": "world-cup",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ],
+    "catalog": {
+      "dotenv": "^17.2.2",
+      "zod": "^4.1.13",
+      "typescript": "^6",
+      "lucide-react": "^0.546.0",
+      "next-themes": "^0.4.6",
+      "react": "^19.2.6",
+      "react-dom": "^19.2.6",
+      "sonner": "^2.0.5",
+      "@types/react": "^19.2.15",
+      "@types/react-dom": "^19.2.3",
+      "tailwindcss": "^4.1.18"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev:web": "turbo -F web dev",
+    "db:push": "turbo -F @world-cup/db db:push",
+    "db:studio": "turbo -F @world-cup/db db:studio",
+    "db:generate": "turbo -F @world-cup/db db:generate",
+    "db:migrate": "turbo -F @world-cup/db db:migrate",
+    "check": "biome check --write ."
+  },
+  "dependencies": {
+    "@world-cup/env": "workspace:*",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.16",
+    "@types/node": "^22.13.14",
+    "@world-cup/config": "workspace:*",
+    "lefthook": "^2.1.9",
+    "turbo": "^2.9.16",
+    "typescript": "catalog:"
+  },
+  "packageManager": "bun@1.3.14"
+}

@@ -1,0 +1,3 @@
+{
+  "extends": "@world-cup/config/tsconfig.base.json"
+}
