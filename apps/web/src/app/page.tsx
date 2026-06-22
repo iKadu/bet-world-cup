@@ -200,6 +200,7 @@ export default async function Home() {
 									<Button
 										size="sm"
 										className="justify-self-end"
+										nativeButton={false}
 										render={<Link href="/matches" />}
 									>
 										Palpitar

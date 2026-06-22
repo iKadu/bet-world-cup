@@ -7,6 +7,7 @@ import { Button } from "@world-cup/ui/components/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
@@ -111,7 +112,9 @@ export default function Header() {
 								<span className="text-muted-foreground text-xs">▾</span>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent>
-								<DropdownMenuLabel>{session.user.email}</DropdownMenuLabel>
+								<DropdownMenuGroup>
+									<DropdownMenuLabel>{session.user.email}</DropdownMenuLabel>
+								</DropdownMenuGroup>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem render={<Link href="/predictions" />}>
 									Minhas previsões
@@ -132,11 +135,16 @@ export default function Header() {
 							<Button
 								variant="ghost"
 								size="sm"
+								nativeButton={false}
 								render={<Link href="/sign-in" />}
 							>
 								Entrar
 							</Button>
-							<Button size="sm" render={<Link href="/sign-up" />}>
+							<Button
+								size="sm"
+								nativeButton={false}
+								render={<Link href="/sign-up" />}
+							>
 								Cadastrar
 							</Button>
 						</div>
