@@ -16,7 +16,8 @@ import { eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { PredictionForm } from "./prediction-form";
+import type { ReactNode } from "react";
+import { PredictionFormRow } from "./prediction-form-row";
 
 const homeTeams = alias(teams, "home_teams");
 const awayTeams = alias(teams, "away_teams");
@@ -35,6 +36,9 @@ const STAGE_LABELS: Record<string, string> = {
 	THIRD_PLACE: "3º lugar",
 	FINAL: "Final",
 };
+
+const ROW_GRID =
+	"grid grid-cols-[90px_1fr_auto_1fr_minmax(130px,auto)] items-center gap-3 rounded-lg border bg-surface-row px-4 py-3.5 sm:gap-4 sm:px-5";
 
 type MatchRow = {
 	match: typeof matches.$inferSelect;
@@ -158,90 +162,127 @@ function MatchRows({
 
 	return (
 		<div className="flex flex-col gap-2">
-			{rows.map(({ match, homeTeam, awayTeam }) => {
-				const prediction = predictionsByMatchId.get(match.id);
-				const isLive = isMatchLocked(match) && match.status !== "FINISHED";
+			{rows.map(({ match, homeTeam, awayTeam }) => (
+				<MatchRowItem
+					key={match.id}
+					match={match}
+					homeTeam={homeTeam}
+					awayTeam={awayTeam}
+					prediction={predictionsByMatchId.get(match.id)}
+					isLoggedIn={isLoggedIn}
+					editable={editable}
+				/>
+			))}
+		</div>
+	);
+}
 
-				return (
-					<div
-						key={match.id}
-						className={cn(
-							"grid grid-cols-[90px_1fr_auto_1fr_minmax(120px,auto)] items-center gap-3 rounded-lg border bg-surface-row px-4 py-3.5 sm:gap-4 sm:px-5",
-							isLive && "border-live/35",
-							editable && prediction && "border-points-exact-border/60",
-						)}
+function MatchRowItem({
+	match,
+	homeTeam,
+	awayTeam,
+	prediction,
+	isLoggedIn,
+	editable,
+}: {
+	match: typeof matches.$inferSelect;
+	homeTeam: typeof teams.$inferSelect | null;
+	awayTeam: typeof teams.$inferSelect | null;
+	prediction: PredictionRow | undefined;
+	isLoggedIn: boolean;
+	editable: boolean;
+}) {
+	const locked = isMatchLocked(match);
+	const isLive = locked && match.status !== "FINISHED";
+	const showForm = editable && isLoggedIn && !locked;
+
+	const rowClassName = cn(
+		ROW_GRID,
+		isLive && "border-live/35",
+		editable && prediction && "border-points-exact-border/60",
+	);
+
+	const groupCell: ReactNode = (
+		<div className="flex flex-col gap-0.5">
+			<span className="font-mono text-[10px] text-muted-foreground uppercase tracking-wide">
+				{match.groupId
+					? `Grupo ${match.groupId}`
+					: (STAGE_LABELS[match.stage] ?? match.stage)}
+			</span>
+			<span className="font-mono text-[11px] text-accent-text">
+				{dateFormatter.format(match.kickoff)}
+			</span>
+		</div>
+	);
+
+	const homeCell: ReactNode = (
+		<div className="flex items-center justify-end gap-1.5 truncate font-display font-semibold text-sm">
+			<TeamFlag tla={homeTeam?.tla} />
+			<span className="truncate">{homeTeam?.name ?? "A definir"}</span>
+		</div>
+	);
+
+	const awayCell: ReactNode = (
+		<div className="flex items-center gap-1.5 truncate font-display font-semibold text-sm">
+			<span className="truncate">{awayTeam?.name ?? "A definir"}</span>
+			<TeamFlag tla={awayTeam?.tla} />
+		</div>
+	);
+
+	if (showForm) {
+		return (
+			<PredictionFormRow
+				matchId={match.id}
+				defaultHomeValue={prediction?.homeScoreGuess}
+				defaultAwayValue={prediction?.awayScoreGuess}
+				className={rowClassName}
+				groupCell={groupCell}
+				homeCell={homeCell}
+				awayCell={awayCell}
+			/>
+		);
+	}
+
+	return (
+		<div className={rowClassName}>
+			{groupCell}
+			{homeCell}
+			<div className="flex h-[54px] items-center justify-center">
+				{!locked ? (
+					<MatchStatusBadge status={match.status} />
+				) : (
+					<span className="font-bold font-mono text-2xl tabular-nums">
+						{match.homeScore ?? "–"}
+						<span className="px-1 text-muted-foreground">:</span>
+						{match.awayScore ?? "–"}
+					</span>
+				)}
+			</div>
+			{awayCell}
+			<div className="flex flex-col items-end gap-1.5">
+				{locked && <MatchStatusBadge status={match.status} />}
+				{!editable &&
+					(prediction ? (
+						<div className="flex items-center gap-1.5">
+							<span className="font-mono text-[11px] text-muted-foreground">
+								pick {prediction.homeScoreGuess}–{prediction.awayScoreGuess}
+							</span>
+							<PointsBadge points={prediction.pointsEarned} />
+						</div>
+					) : (
+						<span className="font-mono text-[11px] text-muted-foreground">
+							—
+						</span>
+					))}
+				{editable && !isLoggedIn && (
+					<Link
+						href="/sign-in"
+						className="font-mono text-[11px] text-accent-text underline"
 					>
-						<div className="flex flex-col gap-0.5">
-							<span className="font-mono text-[10px] text-muted-foreground uppercase tracking-wide">
-								{match.groupId
-									? `Grupo ${match.groupId}`
-									: (STAGE_LABELS[match.stage] ?? match.stage)}
-							</span>
-							<span className="font-mono text-[11px] text-accent-text">
-								{dateFormatter.format(match.kickoff)}
-							</span>
-						</div>
-
-						<div className="flex items-center justify-end gap-1.5 truncate font-display font-semibold text-sm">
-							<TeamFlag tla={homeTeam?.tla} />
-							<span className="truncate">{homeTeam?.name ?? "A definir"}</span>
-						</div>
-
-						<div className="flex flex-col items-center gap-1.5">
-							{!isMatchLocked(match) ? (
-								editable && isLoggedIn ? (
-									<PredictionForm
-										matchId={match.id}
-										defaultHomeValue={prediction?.homeScoreGuess}
-										defaultAwayValue={prediction?.awayScoreGuess}
-									/>
-								) : (
-									<MatchStatusBadge status={match.status} />
-								)
-							) : (
-								<span className="font-bold font-mono text-2xl tabular-nums">
-									{match.homeScore ?? "–"}
-									<span className="px-1 text-muted-foreground">:</span>
-									{match.awayScore ?? "–"}
-								</span>
-							)}
-						</div>
-
-						<div className="flex items-center gap-1.5 truncate font-display font-semibold text-sm">
-							<span className="truncate">{awayTeam?.name ?? "A definir"}</span>
-							<TeamFlag tla={awayTeam?.tla} />
-						</div>
-
-						<div className="flex flex-col items-end gap-1.5">
-							{isMatchLocked(match) && (
-								<MatchStatusBadge status={match.status} />
-							)}
-							{!editable &&
-								(prediction ? (
-									<div className="flex items-center gap-1.5">
-										<span className="font-mono text-[11px] text-muted-foreground">
-											pick {prediction.homeScoreGuess}–
-											{prediction.awayScoreGuess}
-										</span>
-										<PointsBadge points={prediction.pointsEarned} />
-									</div>
-								) : (
-									<span className="font-mono text-[11px] text-muted-foreground">
-										—
-									</span>
-								))}
-							{editable && !isLoggedIn && (
-								<Link
-									href="/sign-in"
-									className="font-mono text-[11px] text-accent-text underline"
-								>
-									Entre para palpitar
-								</Link>
-							)}
-						</div>
-					</div>
-				);
-			})}
+						Entre para palpitar
+					</Link>
+				)}
+			</div>
 		</div>
 	);
 }

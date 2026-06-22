@@ -60,7 +60,10 @@ export default function Header() {
 						</span>
 					</Link>
 					{isAdmin ? (
-						<Badge className="border-amber/40 bg-amber/15 text-amber-foreground">
+						<Badge
+							render={<Link href="/admin/sync" />}
+							className="border-amber/40 bg-amber/15 text-amber-foreground hover:bg-amber/25"
+						>
 							Admin
 						</Badge>
 					) : null}
@@ -90,9 +93,10 @@ export default function Header() {
 						<DropdownMenu>
 							<DropdownMenuTrigger
 								render={
-									<button
-										type="button"
-										className="flex items-center gap-2 rounded-full border border-border py-1 pr-3 pl-1.5 text-sm transition-colors hover:bg-accent"
+									<Button
+										variant="outline"
+										size="sm"
+										className="gap-2 rounded-full pr-3 pl-1.5"
 									/>
 								}
 							>
