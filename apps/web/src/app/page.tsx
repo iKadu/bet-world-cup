@@ -1,11 +1,10 @@
 import { getServerSession } from "@world-cup/auth/server";
 import { db } from "@world-cup/db";
-import { isMatchLocked } from "@world-cup/db/lib/match-lock";
 import { matches, predictions, teams } from "@world-cup/db/schema";
 import { Button } from "@world-cup/ui/components/button";
 import { Card, CardContent } from "@world-cup/ui/components/card";
 import { TeamFlag } from "@world-cup/ui/components/flag";
-import { eq } from "drizzle-orm";
+import { and, count, eq, gt, inArray, notInArray } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -14,9 +13,12 @@ import { getLeaderboard } from "@/lib/ranking";
 const homeTeams = alias(teams, "home_teams");
 const awayTeams = alias(teams, "away_teams");
 
+const UPCOMING_MATCHES_TO_SHOW = 3;
+
 export default async function Home() {
 	const session = await getServerSession();
 	const t = await getTranslations("Dashboard");
+	const tPredictions = await getTranslations("Predictions");
 	const tCommon = await getTranslations("Common");
 	const locale = await getLocale();
 	const dateFormatter = new Intl.DateTimeFormat(locale, {
@@ -24,34 +26,37 @@ export default async function Home() {
 		timeStyle: "short",
 	});
 
-	const allMatches = await db
-		.select({ match: matches, homeTeam: homeTeams, awayTeam: awayTeams })
-		.from(matches)
-		.leftJoin(homeTeams, eq(matches.homeTeamId, homeTeams.id))
-		.leftJoin(awayTeams, eq(matches.awayTeamId, awayTeams.id))
-		.orderBy(matches.kickoff)
-		.limit(40);
-
-	const liveCount = allMatches.filter(
-		(row) =>
-			isMatchLocked(row.match) &&
-			(row.match.status === "IN_PLAY" || row.match.status === "PAUSED"),
-	).length;
-
 	const myPredictions = session
 		? await db
 				.select()
 				.from(predictions)
 				.where(eq(predictions.userId, session.user.id))
 		: [];
-	const myPredictedMatchIds = new Set(myPredictions.map((p) => p.matchId));
+	const myPredictedMatchIds = myPredictions.map(
+		(prediction) => prediction.matchId,
+	);
 
-	const matchesToPredict = allMatches
-		.filter(
-			(row) =>
-				!isMatchLocked(row.match) && !myPredictedMatchIds.has(row.match.id),
+	const matchesToPredict = await db
+		.select({ match: matches, homeTeam: homeTeams, awayTeam: awayTeams })
+		.from(matches)
+		.leftJoin(homeTeams, eq(matches.homeTeamId, homeTeams.id))
+		.leftJoin(awayTeams, eq(matches.awayTeamId, awayTeams.id))
+		.where(
+			and(
+				inArray(matches.status, ["SCHEDULED", "TIMED"]),
+				gt(matches.kickoff, new Date()),
+				myPredictedMatchIds.length > 0
+					? notInArray(matches.id, myPredictedMatchIds)
+					: undefined,
+			),
 		)
-		.slice(0, 5);
+		.orderBy(matches.kickoff)
+		.limit(UPCOMING_MATCHES_TO_SHOW);
+
+	const [{ value: liveCount }] = await db
+		.select({ value: count() })
+		.from(matches)
+		.where(inArray(matches.status, ["IN_PLAY", "PAUSED"]));
 
 	const leaderboard = await getLeaderboard();
 	const leader = leaderboard[0];
@@ -59,6 +64,41 @@ export default async function Home() {
 		? leaderboard.findIndex((row) => row.userId === session.user.id)
 		: -1;
 	const myRank = myRankIndex >= 0 ? leaderboard[myRankIndex] : undefined;
+
+	const confidenceMatchIds = matchesToPredict.map((row) => row.match.id);
+	const confidencePredictions = confidenceMatchIds.length
+		? await db
+				.select({
+					matchId: predictions.matchId,
+					homeScoreGuess: predictions.homeScoreGuess,
+					awayScoreGuess: predictions.awayScoreGuess,
+				})
+				.from(predictions)
+				.where(inArray(predictions.matchId, confidenceMatchIds))
+		: [];
+
+	function getConfidence(matchId: string) {
+		const guesses = confidencePredictions.filter(
+			(prediction) => prediction.matchId === matchId,
+		);
+		const total = guesses.length;
+
+		if (total === 0) return null;
+
+		const home = guesses.filter(
+			(guess) => guess.homeScoreGuess > guess.awayScoreGuess,
+		).length;
+		const draw = guesses.filter(
+			(guess) => guess.homeScoreGuess === guess.awayScoreGuess,
+		).length;
+		const away = total - home - draw;
+
+		return {
+			homePct: Math.round((home / total) * 100),
+			drawPct: Math.round((draw / total) * 100),
+			awayPct: Math.round((away / total) * 100),
+		};
+	}
 
 	return (
 		<div>
@@ -219,6 +259,82 @@ export default async function Home() {
 						</div>
 					)}
 				</section>
+
+				{matchesToPredict.length > 0 && (
+					<section className="mt-8">
+						<div className="mb-3 flex items-center justify-between">
+							<h2 className="font-bold font-display text-lg">
+								{t("groupConfidenceTitle")}
+							</h2>
+							<span className="font-mono text-[11px] text-muted-foreground uppercase tracking-wide">
+								{t("groupConfidenceSubtitle")}
+							</span>
+						</div>
+						<div className="flex flex-col gap-3">
+							{matchesToPredict.map(({ match, homeTeam, awayTeam }) => {
+								const confidence = getConfidence(match.id);
+
+								return (
+									<div
+										key={match.id}
+										className="rounded-lg border bg-surface-row p-4"
+									>
+										<div className="mb-2.5 flex items-center justify-between gap-2 font-display font-semibold text-sm">
+											<span className="flex min-w-0 items-center gap-1.5">
+												<TeamFlag tla={homeTeam?.tla} />
+												<span className="truncate">
+													{homeTeam?.name ?? tCommon("teamTbd")}
+												</span>
+											</span>
+											<span className="shrink-0 font-mono text-[10px] text-muted-foreground uppercase">
+												{tPredictions("vs")}
+											</span>
+											<span className="flex min-w-0 items-center justify-end gap-1.5">
+												<span className="truncate">
+													{awayTeam?.name ?? tCommon("teamTbd")}
+												</span>
+												<TeamFlag tla={awayTeam?.tla} />
+											</span>
+										</div>
+										{confidence ? (
+											<>
+												<div className="flex h-2 overflow-hidden rounded-full bg-foreground/10">
+													<div
+														className="bg-accent-lime"
+														style={{ width: `${confidence.homePct}%` }}
+													/>
+													<div
+														className="bg-foreground/30"
+														style={{ width: `${confidence.drawPct}%` }}
+													/>
+													<div
+														className="bg-amber"
+														style={{ width: `${confidence.awayPct}%` }}
+													/>
+												</div>
+												<div className="mt-2 flex justify-between font-mono text-[11px]">
+													<span className="text-accent-text">
+														{t("homeWin")} {confidence.homePct}%
+													</span>
+													<span className="text-muted-foreground">
+														{t("draw")} {confidence.drawPct}%
+													</span>
+													<span className="text-amber-foreground">
+														{t("awayWin")} {confidence.awayPct}%
+													</span>
+												</div>
+											</>
+										) : (
+											<p className="text-muted-foreground text-xs">
+												{t("noPredictionsYet")}
+											</p>
+										)}
+									</div>
+								);
+							})}
+						</div>
+					</section>
+				)}
 			</div>
 		</div>
 	);

@@ -37,7 +37,13 @@
 		"predictNext": "Predict your next matches",
 		"viewAll": "View all",
 		"allPredicted": "You've already predicted every upcoming match.",
-		"predict": "Predict"
+		"predict": "Predict",
+		"groupConfidenceTitle": "Group Confidence",
+		"groupConfidenceSubtitle": "what everyone's predicting",
+		"homeWin": "Home",
+		"draw": "Draw",
+		"awayWin": "Away",
+		"noPredictionsYet": "No predictions yet for this match."
 	},
 	"Stages": {
 		"GROUP_STAGE": "Group",

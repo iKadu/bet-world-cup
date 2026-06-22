@@ -37,7 +37,13 @@
 		"predictNext": "Próximos jogos sem palpite",
 		"viewAll": "Ver todos",
 		"allPredicted": "Você já palpitou em todos os próximos jogos disponíveis.",
-		"predict": "Palpitar"
+		"predict": "Palpitar",
+		"groupConfidenceTitle": "Confiança do grupo",
+		"groupConfidenceSubtitle": "o que a galera está apostando",
+		"homeWin": "Casa",
+		"draw": "Empate",
+		"awayWin": "Fora",
+		"noPredictionsYet": "Ainda sem palpites para essa partida."
 	},
 	"Stages": {
 		"GROUP_STAGE": "Grupos",
