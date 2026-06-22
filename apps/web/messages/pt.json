@@ -60,13 +60,15 @@
 		"pick": "pick {home}–{away}",
 		"save": "Salvar",
 		"saving": "...",
-		"saveSuccess": "Palpite salvo!"
+		"saveSuccess": "Palpite salvo!",
+		"saved": "✓ Salvo"
 	},
 	"PredictionErrors": {
 		"mustSignIn": "Você precisa entrar para palpitar.",
 		"invalid": "Palpite inválido.",
 		"matchNotFound": "Partida não encontrada.",
-		"locked": "Essa partida já começou ou terminou."
+		"locked": "Essa partida já começou ou terminou.",
+		"alreadySubmitted": "Você já registrou um palpite para essa partida."
 	},
 	"Predictions": {
 		"title": "Minhas previsões",

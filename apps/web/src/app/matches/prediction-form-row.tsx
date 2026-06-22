@@ -10,8 +10,6 @@ import { submitPrediction } from "./actions";
 
 interface PredictionFormRowProps {
 	matchId: string;
-	defaultHomeValue?: number;
-	defaultAwayValue?: number;
 	className: string;
 	groupCell: ReactNode;
 	homeCell: ReactNode;
@@ -20,8 +18,6 @@ interface PredictionFormRowProps {
 
 export function PredictionFormRow({
 	matchId,
-	defaultHomeValue,
-	defaultAwayValue,
 	className,
 	groupCell,
 	homeCell,
@@ -49,8 +45,6 @@ export function PredictionFormRow({
 				<ScoreInput
 					homeName="homeScoreGuess"
 					awayName="awayScoreGuess"
-					defaultHomeValue={defaultHomeValue}
-					defaultAwayValue={defaultAwayValue}
 					disabled={isPending}
 				/>
 			</div>

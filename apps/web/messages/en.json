@@ -60,13 +60,15 @@
 		"pick": "pick {home}–{away}",
 		"save": "Save",
 		"saving": "...",
-		"saveSuccess": "Prediction saved!"
+		"saveSuccess": "Prediction saved!",
+		"saved": "✓ Saved"
 	},
 	"PredictionErrors": {
 		"mustSignIn": "You need to sign in to predict.",
 		"invalid": "Invalid prediction.",
 		"matchNotFound": "Match not found.",
-		"locked": "This match has already started or finished."
+		"locked": "This match has already started or finished.",
+		"alreadySubmitted": "You've already submitted a prediction for this match."
 	},
 	"Predictions": {
 		"title": "My Predictions",

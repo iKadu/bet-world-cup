@@ -54,7 +54,7 @@ export async function submitPrediction(
 		return { success: false, error: t("locked") };
 	}
 
-	await db
+	const [inserted] = await db
 		.insert(predictions)
 		.values({
 			userId: session.user.id,
@@ -62,14 +62,12 @@ export async function submitPrediction(
 			homeScoreGuess: parsed.data.homeScoreGuess,
 			awayScoreGuess: parsed.data.awayScoreGuess,
 		})
-		.onConflictDoUpdate({
-			target: [predictions.userId, predictions.matchId],
-			set: {
-				homeScoreGuess: parsed.data.homeScoreGuess,
-				awayScoreGuess: parsed.data.awayScoreGuess,
-				updatedAt: new Date(),
-			},
-		});
+		.onConflictDoNothing({ target: [predictions.userId, predictions.matchId] })
+		.returning({ id: predictions.id });
+
+	if (!inserted) {
+		return { success: false, error: t("alreadySubmitted") };
+	}
 
 	revalidatePath("/matches");
 	revalidatePath("/predictions");

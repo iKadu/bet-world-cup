@@ -271,7 +271,7 @@ function MatchRowItem({
 
 	const locked = isMatchLocked(match);
 	const isLive = locked && match.status !== "FINISHED";
-	const showForm = editable && isLoggedIn && !locked;
+	const showForm = editable && isLoggedIn && !locked && !prediction;
 
 	const rowClassName = cn(
 		ROW_GRID,
@@ -310,8 +310,6 @@ function MatchRowItem({
 		return (
 			<PredictionFormRow
 				matchId={match.id}
-				defaultHomeValue={prediction?.homeScoreGuess}
-				defaultAwayValue={prediction?.awayScoreGuess}
 				className={rowClassName}
 				groupCell={groupCell}
 				homeCell={homeCell}
@@ -325,19 +323,28 @@ function MatchRowItem({
 			{groupCell}
 			{homeCell}
 			<div className="flex h-[54px] items-center justify-center">
-				{!locked ? (
-					<MatchStatusBadge status={match.status} />
-				) : (
+				{locked ? (
 					<span className="font-bold font-mono text-2xl tabular-nums">
 						{match.homeScore ?? "–"}
 						<span className="px-1 text-muted-foreground">:</span>
 						{match.awayScore ?? "–"}
 					</span>
+				) : prediction ? (
+					<span className="rounded-md border border-points-exact-border bg-points-exact-bg px-2.5 py-1 font-bold font-mono text-points-exact-text text-xs">
+						{prediction.homeScoreGuess}–{prediction.awayScoreGuess}
+					</span>
+				) : (
+					<MatchStatusBadge status={match.status} />
 				)}
 			</div>
 			{awayCell}
 			<div className="flex flex-col items-end gap-1.5">
 				{locked && <MatchStatusBadge status={match.status} />}
+				{!locked && prediction && (
+					<span className="font-mono text-[11px] text-muted-foreground uppercase tracking-wide">
+						{t("saved")}
+					</span>
+				)}
 				{!editable &&
 					(prediction ? (
 						<div className="flex items-center gap-1.5">
