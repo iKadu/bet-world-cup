@@ -13,6 +13,7 @@ import { teams } from "./teams";
 
 export const matchStageEnum = pgEnum("match_stage", [
 	"GROUP_STAGE",
+	"LAST_32",
 	"LAST_16",
 	"QUARTER_FINALS",
 	"SEMI_FINALS",

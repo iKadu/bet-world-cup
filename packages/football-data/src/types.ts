@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const matchStages = [
 	"GROUP_STAGE",
+	"LAST_32",
 	"LAST_16",
 	"QUARTER_FINALS",
 	"SEMI_FINALS",
