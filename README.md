@@ -1,62 +1,62 @@
-# WC26 Predictor — Bolão da Copa do Mundo 2026
+# WC26 Predictor — 2026 World Cup Prediction Pool
 
-Um bolão (pool de palpites) para a Copa do Mundo de 2026. Cada usuário cadastrado palpita o placar de cada partida do torneio (fase de grupos e mata-mata) e acumula pontos conforme os resultados reais vão saindo. Há um único ranking global — não existem bolões privados ou apostas em dinheiro, só pontuação e disputa entre os participantes.
+A prediction pool ("bolão") for the 2026 FIFA World Cup. Every registered user predicts the exact score of each match in the tournament (group stage and knockout rounds) and earns points as real results come in. There's a single global leaderboard — no private pools and no money involved, just points and bragging rights among participants.
 
-## Como funciona
+## How it works
 
-- **Cadastro/login** com email e senha.
-- **Palpite de placar exato** em cada partida, editável livremente até o jogo começar.
-- **Depois do primeiro palpite salvo, ele trava** — não é mais possível alterar.
-- **Pontuação**, calculada automaticamente quando o resultado real é sincronizado:
-  - **10 pontos** — acertou o placar exato.
-  - **5 pontos** — acertou só o resultado (vitória de um dos dois lados ou empate), sem o placar exato.
-  - **0 pontos** — errou.
-- **Ranking global** com pódio para o top 3 e destaque para a sua posição.
-- **Dashboard** com seu desempenho, os 3 próximos jogos que faltam palpitar, e a "confiança do grupo" (o que a galera está apostando em cada um desses jogos).
-- **Multi-idioma** (Português/Inglês), com seletor no header.
-- **Painel admin** para sincronizar manualmente os dados reais da Copa (times, grupos, partidas e resultados).
+- **Sign up / sign in** with email and password.
+- **Predict the exact score** of every match, freely editable until kickoff.
+- **Once a prediction is saved, it locks** — it can no longer be changed.
+- **Scoring**, calculated automatically once the real result is synced in:
+  - **10 points** — exact score.
+  - **5 points** — correct outcome only (win for either side, or draw), without the exact score.
+  - **0 points** — wrong.
+- **Global leaderboard** with a podium for the top 3 and a highlight for your own position.
+- **Dashboard** showing your performance, the next 3 matches you haven't predicted yet, and "Group Confidence" (what everyone else is predicting for those same matches).
+- **Multi-language** (Portuguese/English), with a switcher in the header.
+- **Admin panel** to manually sync real World Cup data (teams, groups, matches, and results).
 
-## Stack técnica
+## Tech stack
 
-| Camada | Tecnologia |
+| Layer | Technology |
 |---|---|
 | Framework | [Next.js 16](https://nextjs.org/) (App Router) + TypeScript |
-| Banco de dados | PostgreSQL + [Drizzle ORM](https://orm.drizzle.team/) |
-| Autenticação | [Better Auth](https://www.better-auth.com/) (email/senha) |
-| UI | [shadcn/ui](https://ui.shadcn.com/) (estilo `base-lyra`, sobre [Base UI](https://base-ui.com/)) + Tailwind CSS v4 |
-| i18n | [next-intl](https://next-intl.dev/) (PT/EN, sem prefixo de URL) |
-| Dados da Copa | [football-data.org](https://www.football-data.org/) (free tier) |
+| Database | PostgreSQL + [Drizzle ORM](https://orm.drizzle.team/) |
+| Authentication | [Better Auth](https://www.better-auth.com/) (email/password) |
+| UI | [shadcn/ui](https://ui.shadcn.com/) (`base-lyra` style, built on [Base UI](https://base-ui.com/)) + Tailwind CSS v4 |
+| i18n | [next-intl](https://next-intl.dev/) (PT/EN, no URL prefix) |
+| World Cup data | [football-data.org](https://www.football-data.org/) (free tier) |
 | Monorepo | [Turborepo](https://turbo.build/) + [Bun](https://bun.sh/) workspaces |
-| Qualidade | [Biome](https://biomejs.dev/) (lint/format) + [Lefthook](https://github.com/evilmartians/lefthook) (git hooks) |
+| Quality | [Biome](https://biomejs.dev/) (lint/format) + [Lefthook](https://github.com/evilmartians/lefthook) (git hooks) |
 
-## Estrutura do projeto
+## Project structure
 
 ```
 apps/
-  web/                    # Next.js App Router — único app do monorepo
-    src/app/              # rotas: home, matches, predictions, leaderboard, sign-in/up, admin/sync
+  web/                    # Next.js App Router — the monorepo's only app
+    src/app/              # routes: home, matches, predictions, leaderboard, sign-in/up, admin/sync
     src/components/       # header, theme toggle, language switcher
-    src/lib/              # ranking, orquestrador de sync
+    src/lib/              # ranking, sync orchestrator
     messages/             # pt.json / en.json (next-intl)
 
 packages/
-  auth/        # configuração do Better Auth (server + client) usando o schema do packages/db
-  db/          # schema do Drizzle, upserts de sync e motor de pontuação
-  env/         # validação de variáveis de ambiente (@t3-oss/env)
-  football-data/  # cliente da API football-data.org + mapeamento para o nosso schema
-  ui/          # componentes shadcn/ui compartilhados
-  config/      # tsconfig base compartilhado
+  auth/        # Better Auth setup (server + client), wired to the packages/db schema
+  db/          # Drizzle schema, sync upserts, and the scoring engine
+  env/         # environment variable validation (@t3-oss/env)
+  football-data/  # football-data.org API client + mapping to our schema
+  ui/          # shared shadcn/ui components
+  config/      # shared base tsconfig
 ```
 
-## Como rodar localmente
+## Running locally
 
-### Pré-requisitos
+### Prerequisites
 
 - [Bun](https://bun.sh/) 1.3+
-- PostgreSQL 15+ rodando localmente (ou acessível via connection string)
-- Uma chave gratuita da [football-data.org](https://www.football-data.org/client/register) (só é necessária se você quiser sincronizar dados reais)
+- PostgreSQL 15+ running locally (or reachable via a connection string)
+- A free [football-data.org](https://www.football-data.org/client/register) API key (only needed if you want to sync real data)
 
-### 1. Clonar e instalar
+### 1. Clone and install
 
 ```bash
 git clone git@github.com:iKadu/bet-world-cup.git
@@ -64,81 +64,72 @@ cd bet-world-cup
 bun install
 ```
 
-### 2. Configurar variáveis de ambiente
+### 2. Configure environment variables
 
-Copie o exemplo e preencha os valores:
+Copy the example file and fill in the values:
 
 ```bash
 cp apps/web/.env.example apps/web/.env
 ```
 
-| Variável | Descrição |
+| Variable | Description |
 |---|---|
-| `DATABASE_URL` | Connection string do Postgres |
-| `CORS_ORIGIN` | URL do app (`http://localhost:3001` em dev) |
-| `BETTER_AUTH_SECRET` | String aleatória de 32+ caracteres |
-| `BETTER_AUTH_URL` | URL pública do app |
-| `FOOTBALL_DATA_API_KEY` | Chave da football-data.org |
-| `CRON_SECRET` | Segredo para autorizar a rota `/api/sync` |
+| `DATABASE_URL` | Postgres connection string |
+| `CORS_ORIGIN` | The app's URL (`http://localhost:3001` in dev) |
+| `BETTER_AUTH_SECRET` | A random string, 32+ characters |
+| `BETTER_AUTH_URL` | The app's public URL |
+| `FOOTBALL_DATA_API_KEY` | Your football-data.org API key |
+| `CRON_SECRET` | Shared secret used to authorize the `/api/sync` route |
 
-### 3. Criar o schema do banco
+### 3. Create the database schema
 
 ```bash
 bun run db:push
 ```
 
-Isso cria todas as tabelas (usuários, sessões, times, grupos, partidas, palpites, log de sincronização). Para inspecionar o banco visualmente:
+This creates every table (users, sessions, teams, groups, matches, predictions, sync log). To browse the database visually:
 
 ```bash
 bun run db:studio
 ```
 
-### 4. Rodar o app
+### 4. Run the app
 
 ```bash
 bun run dev:web
 ```
 
-Acesse [http://localhost:3001](http://localhost:3001) e crie uma conta em `/sign-up`.
+Visit [http://localhost:3001](http://localhost:3001) and create an account at `/sign-up`.
 
-### 5. Popular os dados da Copa
+### 5. Populate the World Cup data
 
-O banco nasce vazio — você precisa sincronizar os times/partidas reais da football-data.org. Isso só é possível por um usuário **admin**, e ninguém se autopromove pela interface por segurança. Promova sua própria conta direto no banco:
+The database starts empty — you need to sync the real teams/matches from football-data.org. This can only be done by an **admin** user, and nobody can self-promote through the UI for security reasons. Promote your own account directly in the database:
 
 ```sql
-UPDATE "user" SET role = 'admin' WHERE email = 'seu-email@exemplo.com';
+UPDATE "user" SET role = 'admin' WHERE email = 'your-email@example.com';
 ```
 
-Saia e entre de novo na aplicação para a sessão pegar a permissão, depois acesse `/admin/sync` e clique em **"Disparar sync manual"**. Isso importa todo o calendário da Copa 2026 (incluindo partidas já encerradas, com placar real).
+Sign out and back in so your session picks up the new role, then go to `/admin/sync` and click **"Trigger manual sync"**. This imports the full 2026 World Cup schedule, including matches that have already finished (with their real score).
 
-> Não há sincronização automática agendada — a atualização dos dados é sempre disparada manualmente pela página de admin (ou chamando `POST /api/sync` com o header `Authorization: Bearer <CRON_SECRET>`).
+> There's no scheduled automatic sync — data is always refreshed manually from the admin page (or by calling `POST /api/sync` with the header `Authorization: Bearer <CRON_SECRET>`).
 
-## Scripts disponíveis
+## Available scripts
 
-| Comando | Descrição |
+| Command | Description |
 |---|---|
-| `bun run dev` | Roda todos os apps do monorepo em modo dev (via Turborepo) |
-| `bun run dev:web` | Roda só o `apps/web` |
-| `bun run build` | Build de produção de todo o monorepo |
-| `bun run check` | `biome check --write` em todo o repositório |
-| `bun run check-types` | Type-check de todos os pacotes |
-| `bun run db:push` | Aplica o schema do Drizzle no banco configurado |
-| `bun run db:studio` | Abre o Drizzle Studio (UI visual do banco) |
-| `bun run db:generate` | Gera arquivos de migration a partir do schema |
-| `bun run db:migrate` | Aplica migrations geradas |
+| `bun run dev` | Runs every app in the monorepo in dev mode (via Turborepo) |
+| `bun run dev:web` | Runs only `apps/web` |
+| `bun run build` | Production build of the whole monorepo |
+| `bun run check` | `biome check --write` across the entire repository |
+| `bun run check-types` | Type-checks every package |
+| `bun run db:push` | Applies the Drizzle schema to the configured database |
+| `bun run db:studio` | Opens Drizzle Studio (a visual database UI) |
+| `bun run db:generate` | Generates migration files from the schema |
+| `bun run db:migrate` | Applies generated migrations |
 
-## Deploy em produção
+## Code conventions
 
-A aplicação está pronta para deploy na [Vercel](https://vercel.com/), com a raiz do projeto apontando para `apps/web`. Pontos importantes:
-
-- O Postgres local não é acessível pela Vercel — use um provedor na nuvem (recomendado: [Neon](https://neon.tech/), que tem integração de um clique com a Vercel).
-- Configure as mesmas variáveis de ambiente do `.env` nas configurações do projeto na Vercel, com o `DATABASE_URL` apontando para o banco de produção.
-- Rode `bun run db:push` uma vez contra o banco de produção para criar as tabelas antes do primeiro deploy.
-- Não há cron configurado — dispare a sincronização manualmente pela página `/admin/sync` sempre que quiser atualizar os dados.
-
-## Convenções de código
-
-- Todo código precisa passar em `biome check` (formatação e lint).
-- Lógica de banco fica em `packages/db`; componentes de UI reutilizáveis em `packages/ui`.
-- Commits seguem o padrão [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `chore:`, ...).
-- Variáveis de ambiente nunca são hardcoded — sempre via `@world-cup/env`.
+- All code must pass `biome check` (formatting and linting).
+- Database logic lives in `packages/db`; reusable UI components live in `packages/ui`.
+- Commits follow [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `chore:`, ...).
+- Environment variables are never hardcoded — always accessed through `@world-cup/env`.
