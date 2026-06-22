@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@world-cup/ui/lib/utils";
+import { useTranslations } from "next-intl";
 import { useRef } from "react";
 
 interface ScoreTileProps {
@@ -16,6 +17,7 @@ function ScoreTile({
 	disabled,
 	ariaLabel,
 }: ScoreTileProps) {
+	const t = useTranslations("ScoreInput");
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	return (
@@ -38,7 +40,7 @@ function ScoreTile({
 						type="button"
 						tabIndex={-1}
 						onClick={() => inputRef.current?.stepUp()}
-						aria-label="Aumentar"
+						aria-label={t("increase")}
 						className="text-[8px] text-muted-foreground leading-none hover:text-foreground"
 					>
 						▲
@@ -47,7 +49,7 @@ function ScoreTile({
 						type="button"
 						tabIndex={-1}
 						onClick={() => inputRef.current?.stepDown()}
-						aria-label="Diminuir"
+						aria-label={t("decrease")}
 						className="text-[8px] text-muted-foreground leading-none hover:text-foreground"
 					>
 						▼
@@ -75,13 +77,15 @@ function ScoreInput({
 	disabled,
 	className,
 }: ScoreInputProps) {
+	const t = useTranslations("ScoreInput");
+
 	return (
 		<div className={cn("flex items-center gap-1.5", className)}>
 			<ScoreTile
 				name={homeName}
 				defaultValue={defaultHomeValue}
 				disabled={disabled}
-				ariaLabel="Placar do time da casa"
+				ariaLabel={t("homeLabel")}
 			/>
 			<span className="font-bold font-mono text-muted-foreground text-sm">
 				:
@@ -90,7 +94,7 @@ function ScoreInput({
 				name={awayName}
 				defaultValue={defaultAwayValue}
 				disabled={disabled}
-				ariaLabel="Placar do time visitante"
+				ariaLabel={t("awayLabel")}
 			/>
 		</div>
 	);

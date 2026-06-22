@@ -2,6 +2,7 @@
 
 import { Button } from "@world-cup/ui/components/button";
 import { ScoreInput } from "@world-cup/ui/components/score-input";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
@@ -26,17 +27,18 @@ export function PredictionFormRow({
 	homeCell,
 	awayCell,
 }: PredictionFormRowProps) {
+	const t = useTranslations("Matches");
 	const [state, formAction, isPending] = useActionState(submitPrediction, null);
 
 	useEffect(() => {
 		if (!state) return;
 
 		if (state.success) {
-			toast.success("Palpite salvo!");
+			toast.success(t("saveSuccess"));
 		} else {
 			toast.error(state.error);
 		}
-	}, [state]);
+	}, [state, t]);
 
 	return (
 		<form action={formAction} className={className}>
@@ -55,7 +57,7 @@ export function PredictionFormRow({
 			{awayCell}
 			<div className="flex items-center justify-end">
 				<Button type="submit" size="sm" disabled={isPending}>
-					{isPending ? "..." : "Salvar"}
+					{isPending ? t("saving") : t("save")}
 				</Button>
 			</div>
 		</form>

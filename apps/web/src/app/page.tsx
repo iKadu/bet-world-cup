@@ -9,18 +9,21 @@ import { eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { headers } from "next/headers";
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { getLeaderboard } from "@/lib/ranking";
 
 const homeTeams = alias(teams, "home_teams");
 const awayTeams = alias(teams, "away_teams");
 
-const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
-	dateStyle: "short",
-	timeStyle: "short",
-});
-
 export default async function Home() {
 	const session = await auth.api.getSession({ headers: await headers() });
+	const t = await getTranslations("Dashboard");
+	const tCommon = await getTranslations("Common");
+	const locale = await getLocale();
+	const dateFormatter = new Intl.DateTimeFormat(locale, {
+		dateStyle: "short",
+		timeStyle: "short",
+	});
 
 	const allMatches = await db
 		.select({ match: matches, homeTeam: homeTeams, awayTeam: awayTeams })
@@ -65,23 +68,20 @@ export default async function Home() {
 				<div className="relative mx-auto flex max-w-4xl flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
 					<div>
 						<div className="mb-3 flex items-center gap-2 font-mono text-[11px] text-accent-text uppercase tracking-widest">
-							<span>Copa do Mundo 2026</span>
+							<span>{t("eyebrowTournament")}</span>
 							<span className="text-muted-foreground">·</span>
-							<span className="text-muted-foreground">
-								48 seleções · 12 grupos
-							</span>
+							<span className="text-muted-foreground">{t("eyebrowTeams")}</span>
 						</div>
 						<h1 className="font-display font-extrabold text-4xl uppercase leading-tight sm:text-5xl">
 							{session
-								? `Bem-vindo, ${session.user.name.split(" ")[0]}.`
-								: "Dê seu palpite. Suba no ranking."}
+								? t("welcome", { name: session.user.name.split(" ")[0] })
+								: t("welcomeGuest")}
 						</h1>
 					</div>
 					{liveCount > 0 && (
 						<span className="flex shrink-0 items-center gap-2 self-start rounded-full border border-live/45 bg-live/15 px-3 py-1.5 font-mono text-[11px] text-live-foreground uppercase tracking-wide">
 							<span className="size-1.5 animate-live-pulse rounded-full bg-live" />
-							{liveCount}{" "}
-							{liveCount === 1 ? "partida ao vivo" : "partidas ao vivo"}
+							{t("liveMatches", { count: liveCount })}
 						</span>
 					)}
 				</div>
@@ -92,7 +92,7 @@ export default async function Home() {
 					<Card>
 						<CardContent>
 							<p className="mb-4 font-mono text-[11px] text-muted-foreground uppercase tracking-widest">
-								Seu desempenho
+								{t("yourPerformance")}
 							</p>
 							{session ? (
 								<div className="flex items-center gap-6">
@@ -101,27 +101,32 @@ export default async function Home() {
 											{myRank ? `#${myRankIndex + 1}` : "—"}
 										</span>
 										<span className="font-mono text-[11px] text-muted-foreground">
-											de {leaderboard.length}{" "}
-											{leaderboard.length === 1 ? "jogador" : "jogadores"}
+											{t("ofPlayers", { count: leaderboard.length })}
 										</span>
 									</div>
 									<div className="h-12 w-px bg-border" />
 									<div className="flex gap-6">
 										<MiniStat
-											label="Pontos"
+											label={t("points")}
 											value={myRank?.totalPoints ?? 0}
 											accent
 										/>
-										<MiniStat label="Exatos" value={myRank?.exactCount ?? 0} />
-										<MiniStat label="Palpites" value={myPredictions.length} />
+										<MiniStat
+											label={t("exact")}
+											value={myRank?.exactCount ?? 0}
+										/>
+										<MiniStat
+											label={t("predictionsMade")}
+											value={myPredictions.length}
+										/>
 									</div>
 								</div>
 							) : (
 								<p className="text-muted-foreground text-sm">
 									<Link href="/sign-in" className="text-accent-text underline">
-										Entre
+										{t("signInPrompt")}
 									</Link>{" "}
-									para ver sua pontuação e começar a palpitar.
+									{t("signInPromptSuffix")}
 								</p>
 							)}
 						</CardContent>
@@ -135,22 +140,27 @@ export default async function Home() {
 							01
 						</span>
 						<span className="relative font-mono text-[11px] uppercase tracking-widest opacity-80">
-							Ranking global
+							{t("globalRanking")}
 						</span>
 						<div className="relative">
 							{leader ? (
 								<p className="font-display font-semibold text-lg">
-									{leader.name} lidera com {leader.totalPoints} pts
+									{t("leaderHeadline", {
+										name: leader.name,
+										points: leader.totalPoints,
+									})}
 								</p>
 							) : (
 								<p className="font-display font-semibold text-lg">
-									Seja o primeiro a palpitar
+									{t("beTheFirst")}
 								</p>
 							)}
 							<p className="mt-1 font-mono text-xs opacity-80">
 								{myRank && leader && myRank.userId !== leader.userId
-									? `Você está ${leader.totalPoints - myRank.totalPoints} pts atrás do líder`
-									: "Ver tabela completa →"}
+									? t("behindLeader", {
+											diff: leader.totalPoints - myRank.totalPoints,
+										})
+									: t("viewFullTable")}
 							</p>
 						</div>
 					</Link>
@@ -159,18 +169,18 @@ export default async function Home() {
 				<section>
 					<div className="mb-3 flex items-center justify-between">
 						<h2 className="font-bold font-display text-lg">
-							Próximos jogos sem palpite
+							{t("predictNext")}
 						</h2>
 						<Link
 							href="/matches"
 							className="font-mono text-[11px] text-muted-foreground uppercase tracking-wide hover:text-foreground"
 						>
-							Ver todos
+							{t("viewAll")}
 						</Link>
 					</div>
 					{matchesToPredict.length === 0 ? (
 						<p className="rounded-lg border bg-surface-row py-8 text-center text-muted-foreground text-sm">
-							Você já palpitou em todos os próximos jogos disponíveis.
+							{t("allPredicted")}
 						</p>
 					) : (
 						<div className="flex flex-col gap-2">
@@ -185,7 +195,7 @@ export default async function Home() {
 									<span className="flex items-center justify-end gap-1.5 truncate font-display font-semibold text-sm">
 										<TeamFlag tla={homeTeam?.tla} />
 										<span className="truncate">
-											{homeTeam?.name ?? "A definir"}
+											{homeTeam?.name ?? tCommon("teamTbd")}
 										</span>
 									</span>
 									<span className="font-bold font-mono text-muted-foreground text-sm">
@@ -193,7 +203,7 @@ export default async function Home() {
 									</span>
 									<span className="flex items-center gap-1.5 truncate font-display font-semibold text-sm">
 										<span className="truncate">
-											{awayTeam?.name ?? "A definir"}
+											{awayTeam?.name ?? tCommon("teamTbd")}
 										</span>
 										<TeamFlag tla={awayTeam?.tla} />
 									</span>
@@ -203,7 +213,7 @@ export default async function Home() {
 										nativeButton={false}
 										render={<Link href="/matches" />}
 									>
-										Palpitar
+										{t("predict")}
 									</Button>
 								</div>
 							))}

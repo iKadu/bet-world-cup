@@ -19,6 +19,7 @@
 		"clsx": "^2.1.1",
 		"flag-icons": "^7.5.0",
 		"lucide-react": "catalog:",
+		"next-intl": "^4.13.0",
 		"next-themes": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:",

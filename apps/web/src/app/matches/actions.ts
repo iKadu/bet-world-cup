@@ -7,6 +7,7 @@ import { matches, predictions } from "@world-cup/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 
 export type PredictionActionState =
@@ -24,10 +25,11 @@ export async function submitPrediction(
 	_previousState: PredictionActionState,
 	formData: FormData,
 ): Promise<PredictionActionState> {
+	const t = await getTranslations("PredictionErrors");
 	const session = await auth.api.getSession({ headers: await headers() });
 
 	if (!session) {
-		return { success: false, error: "Você precisa entrar para palpitar." };
+		return { success: false, error: t("mustSignIn") };
 	}
 
 	const parsed = submitPredictionSchema.safeParse({
@@ -37,7 +39,7 @@ export async function submitPrediction(
 	});
 
 	if (!parsed.success) {
-		return { success: false, error: "Palpite inválido." };
+		return { success: false, error: t("invalid") };
 	}
 
 	const [match] = await db
@@ -46,11 +48,11 @@ export async function submitPrediction(
 		.where(eq(matches.id, parsed.data.matchId));
 
 	if (!match) {
-		return { success: false, error: "Partida não encontrada." };
+		return { success: false, error: t("matchNotFound") };
 	}
 
 	if (isMatchLocked(match)) {
-		return { success: false, error: "Essa partida já começou ou terminou." };
+		return { success: false, error: t("locked") };
 	}
 
 	await db

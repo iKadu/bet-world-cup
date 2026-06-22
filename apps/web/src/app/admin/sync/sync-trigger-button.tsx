@@ -1,11 +1,13 @@
 "use client";
 
 import { Button } from "@world-cup/ui/components/button";
+import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { triggerManualSync } from "./actions";
 
 export function SyncTriggerButton() {
+	const t = useTranslations("AdminSync");
 	const [isPending, startTransition] = useTransition();
 
 	function handleClick() {
@@ -14,7 +16,10 @@ export function SyncTriggerButton() {
 
 			if (result.success) {
 				toast.success(
-					`Sync concluído: ${result.matchesUpserted} partidas atualizadas, ${result.matchesFinalized} finalizadas.`,
+					t("triggerSuccess", {
+						updated: result.matchesUpserted,
+						finalized: result.matchesFinalized,
+					}),
 				);
 			} else {
 				toast.error(result.error);
@@ -28,7 +33,7 @@ export function SyncTriggerButton() {
 			disabled={isPending}
 			className="font-display uppercase tracking-wide"
 		>
-			↻ {isPending ? "Sincronizando..." : "Disparar sync manual"}
+			↻ {isPending ? t("triggering") : t("triggerButton")}
 		</Button>
 	);
 }

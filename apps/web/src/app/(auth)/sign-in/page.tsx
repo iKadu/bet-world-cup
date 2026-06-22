@@ -8,6 +8,7 @@ import { PasswordInput } from "@world-cup/ui/components/password-input";
 import type { Route } from "next";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { AuthShell } from "../auth-shell";
@@ -23,6 +24,8 @@ export default function SignInPage() {
 function SignInForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const t = useTranslations("SignIn");
+	const tAuth = useTranslations("Auth");
 	const [isLoading, setIsLoading] = useState(false);
 
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -36,7 +39,7 @@ function SignInForm() {
 		setIsLoading(false);
 
 		if (error) {
-			toast.error(error.message ?? "Email ou senha inválidos.");
+			toast.error(error.message ?? t("invalidCredentials"));
 			return;
 		}
 
@@ -46,13 +49,13 @@ function SignInForm() {
 
 	return (
 		<AuthShell
-			title="De volta ao jogo"
-			subtitle="Acesse sua conta do bolão."
+			title={t("title")}
+			subtitle={t("subtitle")}
 			footer={
 				<>
-					Ainda não tem conta?{" "}
+					{t("noAccount")}{" "}
 					<Link href="/sign-up" className="text-accent-text underline">
-						Cadastre-se
+						{t("signUpLink")}
 					</Link>
 				</>
 			}
@@ -63,7 +66,7 @@ function SignInForm() {
 						htmlFor="email"
 						className="font-mono text-[11px] text-muted-foreground uppercase tracking-widest"
 					>
-						Email
+						{tAuth("emailLabel")}
 					</Label>
 					<Input
 						id="email"
@@ -79,7 +82,7 @@ function SignInForm() {
 						htmlFor="password"
 						className="font-mono text-[11px] text-muted-foreground uppercase tracking-widest"
 					>
-						Senha
+						{tAuth("passwordLabel")}
 					</Label>
 					<PasswordInput
 						id="password"
@@ -95,7 +98,7 @@ function SignInForm() {
 					disabled={isLoading}
 					className="mt-2 w-full font-display text-base uppercase tracking-wide"
 				>
-					{isLoading ? "Entrando..." : "Entrar"}
+					{isLoading ? t("submitting") : t("submit")}
 				</Button>
 			</form>
 		</AuthShell>

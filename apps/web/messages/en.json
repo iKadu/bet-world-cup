@@ -1,0 +1,166 @@
+{
+	"Common": {
+		"teamTbd": "TBD"
+	},
+	"Header": {
+		"navHome": "Home",
+		"navMatches": "Matches",
+		"navRanking": "Ranking",
+		"admin": "Admin",
+		"myPredictions": "My Predictions",
+		"adminSync": "Admin: Sync",
+		"signOut": "Sign out",
+		"signIn": "Sign in",
+		"signUp": "Sign up"
+	},
+	"LanguageSwitcher": {
+		"label": "Language"
+	},
+	"Dashboard": {
+		"eyebrowTournament": "FIFA World Cup 2026",
+		"eyebrowTeams": "48 teams · 12 groups",
+		"welcome": "Welcome back, {name}.",
+		"welcomeGuest": "Predict the score. Climb the table.",
+		"liveMatches": "{count, plural, one {# match live now} other {# matches live now}}",
+		"yourPerformance": "Your performance",
+		"ofPlayers": "of {count, plural, one {# player} other {# players}}",
+		"points": "Points",
+		"exact": "Exact",
+		"predictionsMade": "Predicted",
+		"signInPrompt": "Sign in",
+		"signInPromptSuffix": "to see your score and start predicting.",
+		"globalRanking": "Global leaderboard",
+		"leaderHeadline": "{name} leads with {points} pts",
+		"beTheFirst": "Be the first to predict",
+		"behindLeader": "You're {diff} pts behind the leader",
+		"viewFullTable": "View full table →",
+		"predictNext": "Predict your next matches",
+		"viewAll": "View all",
+		"allPredicted": "You've already predicted every upcoming match.",
+		"predict": "Predict"
+	},
+	"Stages": {
+		"GROUP_STAGE": "Group",
+		"LAST_32": "Round of 32",
+		"LAST_16": "Round of 16",
+		"QUARTER_FINALS": "Quarter-finals",
+		"SEMI_FINALS": "Semi-finals",
+		"THIRD_PLACE": "Third place",
+		"FINAL": "Final",
+		"all": "All"
+	},
+	"Matches": {
+		"title": "Matches",
+		"tabUpcoming": "Upcoming",
+		"tabLive": "Live",
+		"tabFinished": "Finished",
+		"empty": "No matches in this category.",
+		"group": "Group {id}",
+		"signInToPredict": "Sign in to predict",
+		"pick": "pick {home}–{away}",
+		"save": "Save",
+		"saving": "...",
+		"saveSuccess": "Prediction saved!"
+	},
+	"PredictionErrors": {
+		"mustSignIn": "You need to sign in to predict.",
+		"invalid": "Invalid prediction.",
+		"matchNotFound": "Match not found.",
+		"locked": "This match has already started or finished."
+	},
+	"Predictions": {
+		"title": "My Predictions",
+		"points": "Points",
+		"exactScores": "Exact scores",
+		"hitRate": "Hit rate",
+		"empty": "You haven't made any predictions yet.",
+		"colGroup": "Group",
+		"colMatch": "Match",
+		"colYourPick": "Your pick",
+		"colResult": "Result",
+		"colStatus": "Status",
+		"colPoints": "Points",
+		"vs": "vs"
+	},
+	"Leaderboard": {
+		"title": "Global ranking",
+		"subtitle": "{count, plural, one {# player} other {# players}} · one worldwide table",
+		"empty": "No registered users yet.",
+		"leaderTag": "★ Leader",
+		"exactScoresCount": "{count} exact scores",
+		"colPosition": "Pos",
+		"colPlayer": "Player",
+		"colExact": "Exact",
+		"colPoints": "Points",
+		"you": "You"
+	},
+	"Auth": {
+		"emailLabel": "Email",
+		"passwordLabel": "Password"
+	},
+	"SignIn": {
+		"title": "Back in the game",
+		"subtitle": "Access your pool account.",
+		"noAccount": "Don't have an account?",
+		"signUpLink": "Sign up",
+		"submit": "Sign in",
+		"submitting": "Signing in...",
+		"invalidCredentials": "Invalid email or password."
+	},
+	"SignUp": {
+		"title": "Join the table",
+		"subtitle": "Sign up to start making your predictions.",
+		"hasAccount": "Already have an account?",
+		"signInLink": "Sign in",
+		"nameLabel": "Name",
+		"passwordHint": "8+ characters",
+		"submit": "Create account",
+		"submitting": "Creating account...",
+		"success": "Account created successfully!",
+		"error": "Couldn't create your account."
+	},
+	"AdminSync": {
+		"title": "Data sync",
+		"subtitle": "Imports teams, groups, matches and results from football-data.org.",
+		"apiConfigured": "API configured",
+		"lastSync": "Last sync: {time}",
+		"noSyncYet": "No sync yet",
+		"matchesTracked": "Matches tracked",
+		"matchesBreakdown": "{finished} finished · {live} live · {scheduled} scheduled",
+		"runHealth": "Last run health",
+		"runHealthDetail": "{success} of {total} runs successful",
+		"noRunsYet": "No sync runs yet.",
+		"colRun": "Run",
+		"colStatus": "Status",
+		"colUpdated": "Updated",
+		"colFinalized": "Scored",
+		"colError": "Error",
+		"statusSuccess": "Success",
+		"statusFailed": "Failed",
+		"statusRunning": "Running",
+		"triggerButton": "Trigger manual sync",
+		"triggering": "Syncing...",
+		"triggerSuccess": "Sync complete: {updated} matches updated, {finalized} scored.",
+		"accessDenied": "Access denied."
+	},
+	"MatchStatus": {
+		"SCHEDULED": "Scheduled",
+		"TIMED": "Scheduled",
+		"IN_PLAY": "Live",
+		"PAUSED": "Half-time",
+		"FINISHED": "Final",
+		"POSTPONED": "Postponed",
+		"SUSPENDED": "Suspended",
+		"CANCELLED": "Cancelled"
+	},
+	"ScoreInput": {
+		"homeLabel": "Home team score",
+		"awayLabel": "Away team score",
+		"increase": "Increase",
+		"decrease": "Decrease"
+	},
+	"PasswordInput": {
+		"show": "Show password",
+		"hide": "Hide password"
+	}
+}

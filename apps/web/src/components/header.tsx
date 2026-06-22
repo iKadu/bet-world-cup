@@ -16,14 +16,10 @@ import {
 import { cn } from "@world-cup/ui/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
+import { LanguageSwitcher } from "./language-switcher";
 import { ModeToggle } from "./mode-toggle";
-
-const NAV_LINKS = [
-	{ href: "/", label: "Home" },
-	{ href: "/matches", label: "Partidas" },
-	{ href: "/leaderboard", label: "Ranking" },
-] as const;
 
 function getInitials(name: string) {
 	const initials = name
@@ -39,8 +35,15 @@ function getInitials(name: string) {
 export default function Header() {
 	const router = useRouter();
 	const pathname = usePathname();
+	const t = useTranslations("Header");
 	const { data: session } = authClient.useSession();
 	const isAdmin = session?.user.role === "admin";
+
+	const navLinks = [
+		{ href: "/", label: t("navHome") },
+		{ href: "/matches", label: t("navMatches") },
+		{ href: "/leaderboard", label: t("navRanking") },
+	] as const;
 
 	async function handleSignOut() {
 		await authClient.signOut();
@@ -65,11 +68,11 @@ export default function Header() {
 							render={<Link href="/admin/sync" />}
 							className="border-amber/40 bg-amber/15 text-amber-foreground hover:bg-amber/25"
 						>
-							Admin
+							{t("admin")}
 						</Badge>
 					) : null}
 					<nav className="hidden items-center gap-5 sm:flex">
-						{NAV_LINKS.map(({ href, label }) => {
+						{navLinks.map(({ href, label }) => {
 							const isActive = pathname === href;
 							return (
 								<Link
@@ -89,6 +92,7 @@ export default function Header() {
 					</nav>
 				</div>
 				<div className="flex items-center gap-2.5">
+					<LanguageSwitcher />
 					<ModeToggle />
 					{session ? (
 						<DropdownMenu>
@@ -117,16 +121,16 @@ export default function Header() {
 								</DropdownMenuGroup>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem render={<Link href="/predictions" />}>
-									Minhas previsões
+									{t("myPredictions")}
 								</DropdownMenuItem>
 								{isAdmin ? (
 									<DropdownMenuItem render={<Link href="/admin/sync" />}>
-										Admin: Sync
+										{t("adminSync")}
 									</DropdownMenuItem>
 								) : null}
 								<DropdownMenuSeparator />
 								<DropdownMenuItem variant="destructive" onClick={handleSignOut}>
-									Sair
+									{t("signOut")}
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -138,14 +142,14 @@ export default function Header() {
 								nativeButton={false}
 								render={<Link href="/sign-in" />}
 							>
-								Entrar
+								{t("signIn")}
 							</Button>
 							<Button
 								size="sm"
 								nativeButton={false}
 								render={<Link href="/sign-up" />}
 							>
-								Cadastrar
+								{t("signUp")}
 							</Button>
 						</div>
 					)}

@@ -1,17 +1,37 @@
+"use client";
+
 import { Badge } from "@world-cup/ui/components/badge";
 import { cn } from "@world-cup/ui/lib/utils";
+import { useTranslations } from "next-intl";
 
 type StatusKind = "scheduled" | "live" | "finished" | "amber";
 
-const STATUS_CONFIG: Record<string, { label: string; kind: StatusKind }> = {
-	SCHEDULED: { label: "Agendado", kind: "scheduled" },
-	TIMED: { label: "Agendado", kind: "scheduled" },
-	IN_PLAY: { label: "Live", kind: "live" },
-	PAUSED: { label: "Intervalo", kind: "live" },
-	FINISHED: { label: "Final", kind: "finished" },
-	POSTPONED: { label: "Adiado", kind: "amber" },
-	SUSPENDED: { label: "Suspenso", kind: "amber" },
-	CANCELLED: { label: "Cancelado", kind: "amber" },
+const KNOWN_STATUSES = [
+	"SCHEDULED",
+	"TIMED",
+	"IN_PLAY",
+	"PAUSED",
+	"FINISHED",
+	"POSTPONED",
+	"SUSPENDED",
+	"CANCELLED",
+] as const;
+
+type KnownStatus = (typeof KNOWN_STATUSES)[number];
+
+function isKnownStatus(status: string): status is KnownStatus {
+	return (KNOWN_STATUSES as readonly string[]).includes(status);
+}
+
+const STATUS_KIND: Record<KnownStatus, StatusKind> = {
+	SCHEDULED: "scheduled",
+	TIMED: "scheduled",
+	IN_PLAY: "live",
+	PAUSED: "live",
+	FINISHED: "finished",
+	POSTPONED: "amber",
+	SUSPENDED: "amber",
+	CANCELLED: "amber",
 };
 
 const KIND_CLASSES: Record<StatusKind, string> = {
@@ -22,20 +42,17 @@ const KIND_CLASSES: Record<StatusKind, string> = {
 };
 
 function MatchStatusBadge({ status }: { status: string }) {
-	const config = STATUS_CONFIG[status] ?? {
-		label: status,
-		kind: "scheduled" as const,
-	};
+	const t = useTranslations("MatchStatus");
+	const known = isKnownStatus(status);
+	const kind = known ? STATUS_KIND[status] : "scheduled";
+	const label = known ? t(status) : status;
 
 	return (
-		<Badge
-			variant="outline"
-			className={cn("gap-1.5", KIND_CLASSES[config.kind])}
-		>
-			{config.kind === "live" && (
+		<Badge variant="outline" className={cn("gap-1.5", KIND_CLASSES[kind])}>
+			{kind === "live" && (
 				<span className="size-1.5 animate-live-pulse rounded-full bg-live" />
 			)}
-			{config.label}
+			{label}
 		</Badge>
 	);
 }

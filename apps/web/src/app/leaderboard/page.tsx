@@ -2,6 +2,7 @@ import { auth } from "@world-cup/auth";
 import { Avatar, AvatarFallback } from "@world-cup/ui/components/avatar";
 import { cn } from "@world-cup/ui/lib/utils";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { getLeaderboard, type LeaderboardRow } from "@/lib/ranking";
 
 function getInitials(name: string) {
@@ -17,20 +18,20 @@ function getInitials(name: string) {
 
 export default async function LeaderboardPage() {
 	const session = await auth.api.getSession({ headers: await headers() });
+	const t = await getTranslations("Leaderboard");
 	const rows = await getLeaderboard();
 	const podium = [rows[1], rows[0], rows[2]];
 
 	return (
 		<div className="mx-auto max-w-4xl px-5 py-8 sm:px-7">
-			<h1 className="font-display font-extrabold text-3xl">Ranking global</h1>
+			<h1 className="font-display font-extrabold text-3xl">{t("title")}</h1>
 			<p className="mb-6 font-mono text-muted-foreground text-xs uppercase tracking-wide">
-				{rows.length} {rows.length === 1 ? "participante" : "participantes"} ·
-				uma única tabela
+				{t("subtitle", { count: rows.length })}
 			</p>
 
 			{rows.length === 0 ? (
 				<p className="py-10 text-center text-muted-foreground text-sm">
-					Ainda não há usuários cadastrados.
+					{t("empty")}
 				</p>
 			) : (
 				<>
@@ -45,6 +46,7 @@ export default async function LeaderboardPage() {
 										entry={entry}
 										rank={rank}
 										emphasized={rank === 1}
+										t={t}
 									/>
 								);
 							})}
@@ -53,10 +55,10 @@ export default async function LeaderboardPage() {
 
 					<div className="overflow-hidden rounded-xl border">
 						<div className="grid grid-cols-[60px_1fr_120px_120px] gap-3 border-b bg-surface-row px-5 py-2.5 font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
-							<span>Pos</span>
-							<span>Jogador</span>
-							<span>Exatos</span>
-							<span className="text-right">Pontos</span>
+							<span>{t("colPosition")}</span>
+							<span>{t("colPlayer")}</span>
+							<span>{t("colExact")}</span>
+							<span className="text-right">{t("colPoints")}</span>
 						</div>
 						{rows.map((row, index) => (
 							<LeaderboardRowItem
@@ -64,6 +66,7 @@ export default async function LeaderboardPage() {
 								row={row}
 								position={index + 1}
 								isYou={row.userId === session?.user.id}
+								t={t}
 							/>
 						))}
 					</div>
@@ -73,14 +76,18 @@ export default async function LeaderboardPage() {
 	);
 }
 
+type LeaderboardTranslator = Awaited<ReturnType<typeof getTranslations>>;
+
 function PodiumCard({
 	entry,
 	rank,
 	emphasized,
+	t,
 }: {
 	entry: LeaderboardRow;
 	rank: 1 | 2 | 3;
 	emphasized: boolean;
+	t: LeaderboardTranslator;
 }) {
 	const rankColor =
 		rank === 2
@@ -100,7 +107,7 @@ function PodiumCard({
 		>
 			{emphasized && (
 				<span className="font-mono text-[10px] text-accent-text uppercase tracking-widest">
-					★ Líder
+					{t("leaderTag")}
 				</span>
 			)}
 			<Avatar size={emphasized ? "lg" : "default"}>
@@ -118,7 +125,7 @@ function PodiumCard({
 				{entry.totalPoints}
 			</span>
 			<span className="font-mono text-[11px] text-muted-foreground">
-				{entry.exactCount} placares exatos
+				{t("exactScoresCount", { count: entry.exactCount })}
 			</span>
 		</div>
 	);
@@ -128,10 +135,12 @@ function LeaderboardRowItem({
 	row,
 	position,
 	isYou,
+	t,
 }: {
 	row: LeaderboardRow;
 	position: number;
 	isYou: boolean;
+	t: LeaderboardTranslator;
 }) {
 	return (
 		<div
@@ -150,7 +159,7 @@ function LeaderboardRowItem({
 				<span className="font-display font-semibold text-sm">{row.name}</span>
 				{isYou && (
 					<span className="rounded-full bg-accent-lime/15 px-2 py-0.5 font-mono text-[10px] text-accent-text uppercase">
-						Você
+						{t("you")}
 					</span>
 				)}
 			</span>

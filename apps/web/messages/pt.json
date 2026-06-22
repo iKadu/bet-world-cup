@@ -1,0 +1,166 @@
+{
+	"Common": {
+		"teamTbd": "A definir"
+	},
+	"Header": {
+		"navHome": "Home",
+		"navMatches": "Partidas",
+		"navRanking": "Ranking",
+		"admin": "Admin",
+		"myPredictions": "Minhas previsões",
+		"adminSync": "Admin: Sync",
+		"signOut": "Sair",
+		"signIn": "Entrar",
+		"signUp": "Cadastrar"
+	},
+	"LanguageSwitcher": {
+		"label": "Idioma"
+	},
+	"Dashboard": {
+		"eyebrowTournament": "Copa do Mundo 2026",
+		"eyebrowTeams": "48 seleções · 12 grupos",
+		"welcome": "Bem-vindo, {name}.",
+		"welcomeGuest": "Dê seu palpite. Suba no ranking.",
+		"liveMatches": "{count, plural, one {# partida ao vivo} other {# partidas ao vivo}}",
+		"yourPerformance": "Seu desempenho",
+		"ofPlayers": "de {count, plural, one {# jogador} other {# jogadores}}",
+		"points": "Pontos",
+		"exact": "Exatos",
+		"predictionsMade": "Palpites",
+		"signInPrompt": "Entre",
+		"signInPromptSuffix": "para ver sua pontuação e começar a palpitar.",
+		"globalRanking": "Ranking global",
+		"leaderHeadline": "{name} lidera com {points} pts",
+		"beTheFirst": "Seja o primeiro a palpitar",
+		"behindLeader": "Você está {diff} pts atrás do líder",
+		"viewFullTable": "Ver tabela completa →",
+		"predictNext": "Próximos jogos sem palpite",
+		"viewAll": "Ver todos",
+		"allPredicted": "Você já palpitou em todos os próximos jogos disponíveis.",
+		"predict": "Palpitar"
+	},
+	"Stages": {
+		"GROUP_STAGE": "Grupos",
+		"LAST_32": "32avos",
+		"LAST_16": "Oitavas",
+		"QUARTER_FINALS": "Quartas",
+		"SEMI_FINALS": "Semis",
+		"THIRD_PLACE": "3º lugar",
+		"FINAL": "Final",
+		"all": "Todas"
+	},
+	"Matches": {
+		"title": "Partidas",
+		"tabUpcoming": "Próximos",
+		"tabLive": "Em andamento",
+		"tabFinished": "Finalizados",
+		"empty": "Nenhuma partida nesta categoria.",
+		"group": "Grupo {id}",
+		"signInToPredict": "Entre para palpitar",
+		"pick": "pick {home}–{away}",
+		"save": "Salvar",
+		"saving": "...",
+		"saveSuccess": "Palpite salvo!"
+	},
+	"PredictionErrors": {
+		"mustSignIn": "Você precisa entrar para palpitar.",
+		"invalid": "Palpite inválido.",
+		"matchNotFound": "Partida não encontrada.",
+		"locked": "Essa partida já começou ou terminou."
+	},
+	"Predictions": {
+		"title": "Minhas previsões",
+		"points": "Pontos",
+		"exactScores": "Placares exatos",
+		"hitRate": "Taxa de acerto",
+		"empty": "Você ainda não fez nenhum palpite.",
+		"colGroup": "Grupo",
+		"colMatch": "Partida",
+		"colYourPick": "Seu palpite",
+		"colResult": "Resultado",
+		"colStatus": "Status",
+		"colPoints": "Pontos",
+		"vs": "vs"
+	},
+	"Leaderboard": {
+		"title": "Ranking global",
+		"subtitle": "{count, plural, one {# participante} other {# participantes}} · uma única tabela",
+		"empty": "Ainda não há usuários cadastrados.",
+		"leaderTag": "★ Líder",
+		"exactScoresCount": "{count} placares exatos",
+		"colPosition": "Pos",
+		"colPlayer": "Jogador",
+		"colExact": "Exatos",
+		"colPoints": "Pontos",
+		"you": "Você"
+	},
+	"Auth": {
+		"emailLabel": "Email",
+		"passwordLabel": "Senha"
+	},
+	"SignIn": {
+		"title": "De volta ao jogo",
+		"subtitle": "Acesse sua conta do bolão.",
+		"noAccount": "Ainda não tem conta?",
+		"signUpLink": "Cadastre-se",
+		"submit": "Entrar",
+		"submitting": "Entrando...",
+		"invalidCredentials": "Email ou senha inválidos."
+	},
+	"SignUp": {
+		"title": "Entre na mesa",
+		"subtitle": "Cadastre-se para começar a dar seus palpites.",
+		"hasAccount": "Já tem uma conta?",
+		"signInLink": "Entrar",
+		"nameLabel": "Nome",
+		"passwordHint": "8+ caracteres",
+		"submit": "Criar conta",
+		"submitting": "Criando conta...",
+		"success": "Conta criada com sucesso!",
+		"error": "Não foi possível criar sua conta."
+	},
+	"AdminSync": {
+		"title": "Sincronização de dados",
+		"subtitle": "Importa times, grupos, partidas e resultados da football-data.org.",
+		"apiConfigured": "API configurada",
+		"lastSync": "Última sync: {time}",
+		"noSyncYet": "Nenhuma sincronização ainda",
+		"matchesTracked": "Partidas monitoradas",
+		"matchesBreakdown": "{finished} finalizadas · {live} em andamento · {scheduled} agendadas",
+		"runHealth": "Saúde das últimas execuções",
+		"runHealthDetail": "{success} de {total} execuções com sucesso",
+		"noRunsYet": "Nenhuma sincronização executada ainda.",
+		"colRun": "Execução",
+		"colStatus": "Status",
+		"colUpdated": "Atualizadas",
+		"colFinalized": "Finalizadas",
+		"colError": "Erro",
+		"statusSuccess": "Sucesso",
+		"statusFailed": "Falhou",
+		"statusRunning": "Em execução",
+		"triggerButton": "Disparar sync manual",
+		"triggering": "Sincronizando...",
+		"triggerSuccess": "Sync concluído: {updated} partidas atualizadas, {finalized} finalizadas.",
+		"accessDenied": "Acesso negado."
+	},
+	"MatchStatus": {
+		"SCHEDULED": "Agendado",
+		"TIMED": "Agendado",
+		"IN_PLAY": "Em andamento",
+		"PAUSED": "Intervalo",
+		"FINISHED": "Final",
+		"POSTPONED": "Adiado",
+		"SUSPENDED": "Suspenso",
+		"CANCELLED": "Cancelado"
+	},
+	"ScoreInput": {
+		"homeLabel": "Placar do time da casa",
+		"awayLabel": "Placar do time visitante",
+		"increase": "Aumentar",
+		"decrease": "Diminuir"
+	},
+	"PasswordInput": {
+		"show": "Mostrar senha",
+		"hide": "Ocultar senha"
+	}
+}

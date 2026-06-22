@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Saira, Saira_Condensed } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 
 import "../index.css";
 import Header from "@/components/header";
@@ -28,22 +30,26 @@ export const metadata: Metadata = {
 	description: "World Cup 2026 prediction pool",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const locale = await getLocale();
+
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang={locale} suppressHydrationWarning>
 			<body
 				className={`${sairaCondensed.variable} ${saira.variable} ${jetBrainsMono.variable} antialiased`}
 			>
-				<Providers>
-					<div className="grid min-h-svh grid-rows-[auto_1fr] bg-background">
-						<Header />
-						{children}
-					</div>
-				</Providers>
+				<NextIntlClientProvider>
+					<Providers>
+						<div className="grid min-h-svh grid-rows-[auto_1fr] bg-background">
+							<Header />
+							{children}
+						</div>
+					</Providers>
+				</NextIntlClientProvider>
 			</body>
 		</html>
 	);
