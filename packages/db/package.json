@@ -5,6 +5,15 @@
 		".": {
 			"default": "./src/index.ts"
 		},
+		"./schema": {
+			"default": "./src/schema/index.ts"
+		},
+		"./sync": {
+			"default": "./src/sync/index.ts"
+		},
+		"./scoring": {
+			"default": "./src/scoring/index.ts"
+		},
 		"./*": {
 			"default": "./src/*.ts"
 		}

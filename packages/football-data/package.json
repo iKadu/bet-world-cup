@@ -1,0 +1,17 @@
+{
+	"name": "@world-cup/football-data",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"dependencies": {
+		"@world-cup/env": "workspace:*",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@world-cup/config": "workspace:*",
+		"typescript": "catalog:"
+	}
+}
