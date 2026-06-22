@@ -1,4 +1,4 @@
-import { auth } from "@world-cup/auth";
+import { getServerSession } from "@world-cup/auth/server";
 import { db } from "@world-cup/db";
 import { matches, predictions, teams } from "@world-cup/db/schema";
 import { POINTS_EXACT_SCORE } from "@world-cup/db/scoring";
@@ -8,7 +8,6 @@ import { PointsBadge } from "@world-cup/ui/components/points-badge";
 import { eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { Route } from "next";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
@@ -16,7 +15,7 @@ const homeTeams = alias(teams, "home_teams");
 const awayTeams = alias(teams, "away_teams");
 
 export default async function PredictionsPage() {
-	const session = await auth.api.getSession({ headers: await headers() });
+	const session = await getServerSession();
 
 	if (!session) {
 		redirect("/sign-in?redirect=/predictions" as Route);

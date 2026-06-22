@@ -1,3 +1,4 @@
+import { getServerSession } from "@world-cup/auth/server";
 import type { Metadata } from "next";
 import { JetBrains_Mono, Saira, Saira_Condensed } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
@@ -36,6 +37,7 @@ export default async function RootLayout({
 	children: React.ReactNode;
 }>) {
 	const locale = await getLocale();
+	const session = await getServerSession();
 
 	return (
 		<html lang={locale} suppressHydrationWarning>
@@ -45,7 +47,7 @@ export default async function RootLayout({
 				<NextIntlClientProvider>
 					<Providers>
 						<div className="grid min-h-svh grid-rows-[auto_1fr] bg-background">
-							<Header />
+							<Header session={session} />
 							{children}
 						</div>
 					</Providers>

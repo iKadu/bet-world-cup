@@ -1,6 +1,7 @@
 "use client";
 
 import { authClient } from "@world-cup/auth/client";
+import type { ServerSession } from "@world-cup/auth/server";
 import { Avatar, AvatarFallback } from "@world-cup/ui/components/avatar";
 import { Badge } from "@world-cup/ui/components/badge";
 import { Button } from "@world-cup/ui/components/button";
@@ -32,11 +33,14 @@ function getInitials(name: string) {
 	return initials.toUpperCase() || "?";
 }
 
-export default function Header() {
+interface HeaderProps {
+	session: ServerSession;
+}
+
+export default function Header({ session }: HeaderProps) {
 	const router = useRouter();
 	const pathname = usePathname();
 	const t = useTranslations("Header");
-	const { data: session } = authClient.useSession();
 	const isAdmin = session?.user.role === "admin";
 
 	const navLinks = [

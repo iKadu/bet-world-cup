@@ -1,12 +1,11 @@
 "use server";
 
-import { auth } from "@world-cup/auth";
+import { getServerSession } from "@world-cup/auth/server";
 import { db } from "@world-cup/db";
 import { isMatchLocked } from "@world-cup/db/lib/match-lock";
 import { matches, predictions } from "@world-cup/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 
@@ -26,7 +25,7 @@ export async function submitPrediction(
 	formData: FormData,
 ): Promise<PredictionActionState> {
 	const t = await getTranslations("PredictionErrors");
-	const session = await auth.api.getSession({ headers: await headers() });
+	const session = await getServerSession();
 
 	if (!session) {
 		return { success: false, error: t("mustSignIn") };

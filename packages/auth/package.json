@@ -5,7 +5,8 @@
 	"type": "module",
 	"exports": {
 		".": "./src/index.ts",
-		"./client": "./src/client.ts"
+		"./client": "./src/client.ts",
+		"./server": "./src/server.ts"
 	},
 	"scripts": {
 		"auth:generate": "DOTENV_CONFIG_PATH=../../apps/web/.env bunx @better-auth/cli generate --config src/index.ts --output ../db/src/schema/auth.ts --yes"
@@ -13,10 +14,13 @@
 	"dependencies": {
 		"@world-cup/db": "workspace:*",
 		"@world-cup/env": "workspace:*",
-		"better-auth": "^1.6.20"
+		"better-auth": "^1.6.20",
+		"next": "^16.2.0",
+		"react": "catalog:"
 	},
 	"devDependencies": {
 		"@better-auth/cli": "^1.4.21",
+		"@types/react": "catalog:",
 		"@world-cup/config": "workspace:*",
 		"typescript": "catalog:"
 	}

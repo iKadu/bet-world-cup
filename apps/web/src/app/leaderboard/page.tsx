@@ -1,7 +1,6 @@
-import { auth } from "@world-cup/auth";
+import { getServerSession } from "@world-cup/auth/server";
 import { Avatar, AvatarFallback } from "@world-cup/ui/components/avatar";
 import { cn } from "@world-cup/ui/lib/utils";
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { getLeaderboard, type LeaderboardRow } from "@/lib/ranking";
 
@@ -17,7 +16,7 @@ function getInitials(name: string) {
 }
 
 export default async function LeaderboardPage() {
-	const session = await auth.api.getSession({ headers: await headers() });
+	const session = await getServerSession();
 	const t = await getTranslations("Leaderboard");
 	const rows = await getLeaderboard();
 	const podium = [rows[1], rows[0], rows[2]];

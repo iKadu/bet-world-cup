@@ -1,17 +1,16 @@
-import { auth } from "@world-cup/auth";
+import { getServerSession } from "@world-cup/auth/server";
 import { db } from "@world-cup/db";
 import { isMatchLocked } from "@world-cup/db/lib/match-lock";
 import { matches, syncRuns } from "@world-cup/db/schema";
 import { Card, CardContent } from "@world-cup/ui/components/card";
 import { cn } from "@world-cup/ui/lib/utils";
 import { desc } from "drizzle-orm";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { SyncTriggerButton } from "./sync-trigger-button";
 
 export default async function AdminSyncPage() {
-	const session = await auth.api.getSession({ headers: await headers() });
+	const session = await getServerSession();
 
 	if (session?.user.role !== "admin") {
 		redirect("/");
