@@ -23,8 +23,12 @@ export function SyncTriggerButton() {
 	}
 
 	return (
-		<Button onClick={handleClick} disabled={isPending}>
-			{isPending ? "Sincronizando..." : "Disparar sync manual"}
+		<Button
+			onClick={handleClick}
+			disabled={isPending}
+			className="font-display uppercase tracking-wide"
+		>
+			↻ {isPending ? "Sincronizando..." : "Disparar sync manual"}
 		</Button>
 	);
 }

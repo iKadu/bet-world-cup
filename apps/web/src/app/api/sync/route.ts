@@ -5,7 +5,7 @@ import { runSync } from "@/lib/sync";
 async function handleSync(request: NextRequest) {
 	const authHeader = request.headers.get("authorization");
 
-	if (authHeader !== `Bearer ${env.SYNC_CRON_SECRET}`) {
+	if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
 

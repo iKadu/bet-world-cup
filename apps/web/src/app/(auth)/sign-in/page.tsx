@@ -2,20 +2,15 @@
 
 import { authClient } from "@world-cup/auth/client";
 import { Button } from "@world-cup/ui/components/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@world-cup/ui/components/card";
 import { Input } from "@world-cup/ui/components/input";
 import { Label } from "@world-cup/ui/components/label";
+import { PasswordInput } from "@world-cup/ui/components/password-input";
 import type { Route } from "next";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
+import { AuthShell } from "../auth-shell";
 
 export default function SignInPage() {
 	return (
@@ -50,46 +45,59 @@ function SignInForm() {
 	}
 
 	return (
-		<div className="container mx-auto flex max-w-sm flex-col justify-center px-4 py-12">
-			<Card>
-				<CardHeader>
-					<CardTitle>Entrar</CardTitle>
-					<CardDescription>Acesse sua conta do bolão.</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<form onSubmit={handleSubmit} className="grid gap-4">
-						<div className="grid gap-1.5">
-							<Label htmlFor="email">Email</Label>
-							<Input
-								id="email"
-								name="email"
-								type="email"
-								required
-								autoComplete="email"
-							/>
-						</div>
-						<div className="grid gap-1.5">
-							<Label htmlFor="password">Senha</Label>
-							<Input
-								id="password"
-								name="password"
-								type="password"
-								required
-								autoComplete="current-password"
-							/>
-						</div>
-						<Button type="submit" disabled={isLoading} className="mt-2">
-							{isLoading ? "Entrando..." : "Entrar"}
-						</Button>
-					</form>
-					<p className="mt-4 text-center text-muted-foreground text-xs">
-						Ainda não tem conta?{" "}
-						<Link href="/sign-up" className="text-foreground underline">
-							Cadastre-se
-						</Link>
-					</p>
-				</CardContent>
-			</Card>
-		</div>
+		<AuthShell
+			title="De volta ao jogo"
+			subtitle="Acesse sua conta do bolão."
+			footer={
+				<>
+					Ainda não tem conta?{" "}
+					<Link href="/sign-up" className="text-accent-text underline">
+						Cadastre-se
+					</Link>
+				</>
+			}
+		>
+			<form onSubmit={handleSubmit} className="grid gap-4">
+				<div className="grid gap-1.5">
+					<Label
+						htmlFor="email"
+						className="font-mono text-[11px] text-muted-foreground uppercase tracking-widest"
+					>
+						Email
+					</Label>
+					<Input
+						id="email"
+						name="email"
+						type="email"
+						required
+						autoComplete="email"
+						className="h-12 rounded-lg"
+					/>
+				</div>
+				<div className="grid gap-1.5">
+					<Label
+						htmlFor="password"
+						className="font-mono text-[11px] text-muted-foreground uppercase tracking-widest"
+					>
+						Senha
+					</Label>
+					<PasswordInput
+						id="password"
+						name="password"
+						required
+						autoComplete="current-password"
+						className="h-12 rounded-lg"
+					/>
+				</div>
+				<Button
+					type="submit"
+					size="lg"
+					disabled={isLoading}
+					className="mt-2 w-full font-display text-base uppercase tracking-wide"
+				>
+					{isLoading ? "Entrando..." : "Entrar"}
+				</Button>
+			</form>
+		</AuthShell>
 	);
 }

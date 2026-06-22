@@ -2,21 +2,16 @@ import { auth } from "@world-cup/auth";
 import { db } from "@world-cup/db";
 import { isMatchLocked } from "@world-cup/db/lib/match-lock";
 import { matches, predictions, teams } from "@world-cup/db/schema";
+import { TeamFlag } from "@world-cup/ui/components/flag";
 import { MatchStatusBadge } from "@world-cup/ui/components/match-status-badge";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@world-cup/ui/components/table";
+import { PointsBadge } from "@world-cup/ui/components/points-badge";
 import {
 	Tabs,
 	TabsContent,
 	TabsList,
 	TabsTrigger,
 } from "@world-cup/ui/components/tabs";
+import { cn } from "@world-cup/ui/lib/utils";
 import { eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { headers } from "next/headers";
@@ -30,6 +25,16 @@ const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
 	dateStyle: "short",
 	timeStyle: "short",
 });
+
+const STAGE_LABELS: Record<string, string> = {
+	GROUP_STAGE: "Grupos",
+	LAST_32: "32avos",
+	LAST_16: "Oitavas",
+	QUARTER_FINALS: "Quartas",
+	SEMI_FINALS: "Semis",
+	THIRD_PLACE: "3º lugar",
+	FINAL: "Final",
+};
 
 type MatchRow = {
 	match: typeof matches.$inferSelect;
@@ -67,35 +72,40 @@ export default async function MatchesPage() {
 	);
 
 	return (
-		<div className="container mx-auto max-w-4xl px-4 py-6">
-			<h1 className="mb-4 font-medium text-lg">Partidas</h1>
+		<div className="mx-auto max-w-4xl px-5 py-8 sm:px-7">
+			<h1 className="mb-5 font-display font-extrabold text-3xl">Partidas</h1>
 			<Tabs defaultValue="upcoming">
 				<TabsList>
-					<TabsTrigger value="upcoming">
-						Próximos ({upcoming.length})
+					<TabsTrigger value="upcoming" className="gap-2">
+						Próximos
+						<CountPill count={upcoming.length} kind="neutral" />
 					</TabsTrigger>
-					<TabsTrigger value="live">Em andamento ({live.length})</TabsTrigger>
-					<TabsTrigger value="finished">
-						Finalizados ({finished.length})
+					<TabsTrigger value="live" className="gap-2">
+						Em andamento
+						<CountPill count={live.length} kind="live" />
+					</TabsTrigger>
+					<TabsTrigger value="finished" className="gap-2">
+						Finalizados
+						<CountPill count={finished.length} kind="neutral" />
 					</TabsTrigger>
 				</TabsList>
-				<TabsContent value="upcoming">
-					<MatchesTable
+				<TabsContent value="upcoming" className="mt-3">
+					<MatchRows
 						rows={upcoming}
 						predictionsByMatchId={predictionsByMatchId}
 						isLoggedIn={!!session}
 						editable
 					/>
 				</TabsContent>
-				<TabsContent value="live">
-					<MatchesTable
+				<TabsContent value="live" className="mt-3">
+					<MatchRows
 						rows={live}
 						predictionsByMatchId={predictionsByMatchId}
 						isLoggedIn={!!session}
 					/>
 				</TabsContent>
-				<TabsContent value="finished">
-					<MatchesTable
+				<TabsContent value="finished" className="mt-3">
+					<MatchRows
 						rows={finished}
 						predictionsByMatchId={predictionsByMatchId}
 						isLoggedIn={!!session}
@@ -106,7 +116,28 @@ export default async function MatchesPage() {
 	);
 }
 
-function MatchesTable({
+function CountPill({
+	count,
+	kind,
+}: {
+	count: number;
+	kind: "neutral" | "live";
+}) {
+	return (
+		<span
+			className={cn(
+				"rounded-full px-1.5 py-0.5 font-mono text-[10px]",
+				kind === "live"
+					? "bg-live/15 text-live-foreground"
+					: "bg-foreground/8 text-muted-foreground",
+			)}
+		>
+			{count}
+		</span>
+	);
+}
+
+function MatchRows({
 	rows,
 	predictionsByMatchId,
 	isLoggedIn,
@@ -119,68 +150,98 @@ function MatchesTable({
 }) {
 	if (rows.length === 0) {
 		return (
-			<p className="py-8 text-center text-muted-foreground text-sm">
+			<p className="py-10 text-center text-muted-foreground text-sm">
 				Nenhuma partida nesta categoria.
 			</p>
 		);
 	}
 
 	return (
-		<Table>
-			<TableHeader>
-				<TableRow>
-					<TableHead>Partida</TableHead>
-					<TableHead>Data</TableHead>
-					<TableHead>Status</TableHead>
-					<TableHead>Placar</TableHead>
-					<TableHead>Seu palpite</TableHead>
-				</TableRow>
-			</TableHeader>
-			<TableBody>
-				{rows.map(({ match, homeTeam, awayTeam }) => {
-					const prediction = predictionsByMatchId.get(match.id);
+		<div className="flex flex-col gap-2">
+			{rows.map(({ match, homeTeam, awayTeam }) => {
+				const prediction = predictionsByMatchId.get(match.id);
+				const isLive = isMatchLocked(match) && match.status !== "FINISHED";
 
-					return (
-						<TableRow key={match.id}>
-							<TableCell>
-								{homeTeam?.name ?? "A definir"} x{" "}
-								{awayTeam?.name ?? "A definir"}
-							</TableCell>
-							<TableCell>{dateFormatter.format(match.kickoff)}</TableCell>
-							<TableCell>
-								<MatchStatusBadge status={match.status} />
-							</TableCell>
-							<TableCell>
-								{match.homeScore !== null && match.awayScore !== null
-									? `${match.homeScore} x ${match.awayScore}`
-									: "—"}
-							</TableCell>
-							<TableCell>
-								{editable && isLoggedIn ? (
+				return (
+					<div
+						key={match.id}
+						className={cn(
+							"grid grid-cols-[90px_1fr_auto_1fr_minmax(120px,auto)] items-center gap-3 rounded-lg border bg-surface-row px-4 py-3.5 sm:gap-4 sm:px-5",
+							isLive && "border-live/35",
+							editable && prediction && "border-points-exact-border/60",
+						)}
+					>
+						<div className="flex flex-col gap-0.5">
+							<span className="font-mono text-[10px] text-muted-foreground uppercase tracking-wide">
+								{match.groupId
+									? `Grupo ${match.groupId}`
+									: (STAGE_LABELS[match.stage] ?? match.stage)}
+							</span>
+							<span className="font-mono text-[11px] text-accent-text">
+								{dateFormatter.format(match.kickoff)}
+							</span>
+						</div>
+
+						<div className="flex items-center justify-end gap-1.5 truncate font-display font-semibold text-sm">
+							<TeamFlag tla={homeTeam?.tla} />
+							<span className="truncate">{homeTeam?.name ?? "A definir"}</span>
+						</div>
+
+						<div className="flex flex-col items-center gap-1.5">
+							{!isMatchLocked(match) ? (
+								editable && isLoggedIn ? (
 									<PredictionForm
 										matchId={match.id}
 										defaultHomeValue={prediction?.homeScoreGuess}
 										defaultAwayValue={prediction?.awayScoreGuess}
 									/>
-								) : editable ? (
-									<Link href="/sign-in" className="text-xs underline">
-										Entre para palpitar
-									</Link>
-								) : prediction ? (
-									<span>
-										{prediction.homeScoreGuess} x {prediction.awayScoreGuess}
-										{prediction.pointsEarned !== null
-											? ` (${prediction.pointsEarned} pts)`
-											: ""}
-									</span>
 								) : (
-									"—"
-								)}
-							</TableCell>
-						</TableRow>
-					);
-				})}
-			</TableBody>
-		</Table>
+									<MatchStatusBadge status={match.status} />
+								)
+							) : (
+								<span className="font-bold font-mono text-2xl tabular-nums">
+									{match.homeScore ?? "–"}
+									<span className="px-1 text-muted-foreground">:</span>
+									{match.awayScore ?? "–"}
+								</span>
+							)}
+						</div>
+
+						<div className="flex items-center gap-1.5 truncate font-display font-semibold text-sm">
+							<span className="truncate">{awayTeam?.name ?? "A definir"}</span>
+							<TeamFlag tla={awayTeam?.tla} />
+						</div>
+
+						<div className="flex flex-col items-end gap-1.5">
+							{isMatchLocked(match) && (
+								<MatchStatusBadge status={match.status} />
+							)}
+							{!editable &&
+								(prediction ? (
+									<div className="flex items-center gap-1.5">
+										<span className="font-mono text-[11px] text-muted-foreground">
+											pick {prediction.homeScoreGuess}–
+											{prediction.awayScoreGuess}
+										</span>
+										<PointsBadge points={prediction.pointsEarned} />
+									</div>
+								) : (
+									<span className="font-mono text-[11px] text-muted-foreground">
+										—
+									</span>
+								))}
+							{editable && !isLoggedIn && (
+								<Link
+									href="/sign-in"
+									className="font-mono text-[11px] text-accent-text underline"
+								>
+									Entre para palpitar
+								</Link>
+							)}
+						</div>
+					</div>
+				);
+			})}
+		</div>
 	);
 }
