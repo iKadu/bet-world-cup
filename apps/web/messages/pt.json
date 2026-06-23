@@ -12,11 +12,22 @@
 		"signOut": "Sair",
 		"signIn": "Entrar",
 		"signUp": "Cadastrar",
-		"openMenu": "Abrir menu"
+		"openMenu": "Abrir menu",
+		"navCompare": "Comparar"
 	},
 	"Metadata": {
 		"title": "WC26 Predictor",
 		"description": "Bolão da Copa do Mundo 2026. Dê seu palpite, suba no ranking e dispute com os amigos."
+	},
+	"Compare": {
+		"title": "Comparar palpites",
+		"subtitle": "Veja o que a galera apostou nos próximos jogos e nos que estão rolando agora.",
+		"empty": "Nenhuma partida disponível para comparação no momento.",
+		"lockedMessage": "Dê seu palpite primeiro para destravar a comparação com os outros participantes.",
+		"lockedCta": "Palpitar",
+		"missedMessage": "Você não palpitou a tempo nessa partida — sem comparação disponível.",
+		"noOtherPicks": "Ainda ninguém mais palpitou nessa partida.",
+		"you": "Você"
 	},
 	"LanguageSwitcher": {
 		"label": "Idioma"

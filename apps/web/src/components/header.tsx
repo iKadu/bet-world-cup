@@ -48,6 +48,7 @@ export default function Header({ session }: HeaderProps) {
 		{ href: "/", label: t("navHome") },
 		{ href: "/matches", label: t("navMatches") },
 		{ href: "/leaderboard", label: t("navRanking") },
+		{ href: "/compare", label: t("navCompare") },
 	] as const;
 
 	async function handleSignOut() {

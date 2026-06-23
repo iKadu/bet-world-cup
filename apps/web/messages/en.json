@@ -12,11 +12,22 @@
 		"signOut": "Sign out",
 		"signIn": "Sign in",
 		"signUp": "Sign up",
-		"openMenu": "Open menu"
+		"openMenu": "Open menu",
+		"navCompare": "Compare"
 	},
 	"Metadata": {
 		"title": "WC26 Predictor",
 		"description": "World Cup 2026 prediction pool. Make your picks, climb the leaderboard, and compete with friends."
+	},
+	"Compare": {
+		"title": "Compare predictions",
+		"subtitle": "See what everyone else picked for the upcoming matches and the ones live right now.",
+		"empty": "No matches available to compare right now.",
+		"lockedMessage": "Make your prediction first to unlock the comparison with other players.",
+		"lockedCta": "Predict",
+		"missedMessage": "You didn't predict this match in time — no comparison available.",
+		"noOtherPicks": "No one else has predicted this match yet.",
+		"you": "You"
 	},
 	"LanguageSwitcher": {
 		"label": "Language"

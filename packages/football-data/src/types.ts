@@ -37,10 +37,18 @@ const scoreSchema = z.object({
 	}),
 });
 
+// football-data.org's docs only mention IN_PLAY for live matches, but the API
+// has been observed returning the undocumented "LIVE" value too — normalize
+// it before validation so the rest of the app only ever sees IN_PLAY.
+const matchStatusSchema = z.preprocess(
+	(value) => (value === "LIVE" ? "IN_PLAY" : value),
+	z.enum(matchStatuses),
+);
+
 export const footballDataMatchSchema = z.object({
 	id: z.number(),
 	utcDate: z.string(),
-	status: z.enum(matchStatuses),
+	status: matchStatusSchema,
 	matchday: z.number().nullable(),
 	stage: z.enum(matchStages),
 	group: z.string().nullable(),
