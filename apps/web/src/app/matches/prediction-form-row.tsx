@@ -41,7 +41,7 @@ export function PredictionFormRow({
 			<input type="hidden" name="matchId" value={matchId} />
 			{groupCell}
 			{homeCell}
-			<div className="flex h-[54px] items-center justify-center">
+			<div className="col-start-2 row-start-2 flex h-[54px] items-center justify-center sm:col-start-auto sm:row-start-auto">
 				<ScoreInput
 					homeName="homeScoreGuess"
 					awayName="awayScoreGuess"
@@ -49,7 +49,7 @@ export function PredictionFormRow({
 				/>
 			</div>
 			{awayCell}
-			<div className="flex items-center justify-end">
+			<div className="col-start-3 row-start-1 flex items-center justify-end sm:col-start-auto sm:row-start-auto">
 				<Button type="submit" size="sm" disabled={isPending}>
 					{isPending ? t("saving") : t("save")}
 				</Button>

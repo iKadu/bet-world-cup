@@ -11,7 +11,12 @@
 		"adminSync": "Admin: Sync",
 		"signOut": "Sign out",
 		"signIn": "Sign in",
-		"signUp": "Sign up"
+		"signUp": "Sign up",
+		"openMenu": "Open menu"
+	},
+	"Metadata": {
+		"title": "WC26 Predictor",
+		"description": "World Cup 2026 prediction pool. Make your picks, climb the leaderboard, and compete with friends."
 	},
 	"LanguageSwitcher": {
 		"label": "Language"
@@ -100,7 +105,14 @@
 		"colPlayer": "Player",
 		"colExact": "Exact",
 		"colPoints": "Points",
-		"you": "You"
+		"you": "You",
+		"scoringTitle": "How scoring works",
+		"scoringExact": "Exact score",
+		"scoringExactDesc": "Got the full match score right",
+		"scoringCorrect": "Correct outcome",
+		"scoringCorrectDesc": "Got the win, draw, or loss right, but not the exact score",
+		"scoringMiss": "Miss",
+		"scoringMissDesc": "The real result didn't match your prediction"
 	},
 	"Auth": {
 		"emailLabel": "Email",

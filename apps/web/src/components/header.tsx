@@ -20,6 +20,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { LanguageSwitcher } from "./language-switcher";
+import { MobileNav } from "./mobile-nav";
 import { ModeToggle } from "./mode-toggle";
 
 function getInitials(name: string) {
@@ -94,6 +95,7 @@ export default function Header({ session }: HeaderProps) {
 							);
 						})}
 					</nav>
+					<MobileNav navLinks={navLinks} />
 				</div>
 				<div className="flex items-center gap-2.5">
 					<LanguageSwitcher />

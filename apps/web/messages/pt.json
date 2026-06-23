@@ -11,7 +11,12 @@
 		"adminSync": "Admin: Sync",
 		"signOut": "Sair",
 		"signIn": "Entrar",
-		"signUp": "Cadastrar"
+		"signUp": "Cadastrar",
+		"openMenu": "Abrir menu"
+	},
+	"Metadata": {
+		"title": "WC26 Predictor",
+		"description": "Bolão da Copa do Mundo 2026. Dê seu palpite, suba no ranking e dispute com os amigos."
 	},
 	"LanguageSwitcher": {
 		"label": "Idioma"
@@ -100,7 +105,14 @@
 		"colPlayer": "Jogador",
 		"colExact": "Exatos",
 		"colPoints": "Pontos",
-		"you": "Você"
+		"you": "Você",
+		"scoringTitle": "Como funciona a pontuação",
+		"scoringExact": "Placar exato",
+		"scoringExactDesc": "Acertou o placar completo da partida",
+		"scoringCorrect": "Resultado certo",
+		"scoringCorrectDesc": "Acertou vitória, empate ou derrota, mas não o placar exato",
+		"scoringMiss": "Errou",
+		"scoringMissDesc": "O resultado real foi diferente do palpite"
 	},
 	"Auth": {
 		"emailLabel": "Email",

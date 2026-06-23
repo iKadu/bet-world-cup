@@ -1,8 +1,9 @@
 import { getServerSession } from "@world-cup/auth/server";
+import { env } from "@world-cup/env/server";
 import type { Metadata } from "next";
 import { JetBrains_Mono, Saira, Saira_Condensed } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import "../index.css";
 import Header from "@/components/header";
@@ -26,10 +27,30 @@ const jetBrainsMono = JetBrains_Mono({
 	subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-	title: "WC26 Predictor",
-	description: "World Cup 2026 prediction pool",
-};
+export async function generateMetadata(): Promise<Metadata> {
+	const t = await getTranslations("Metadata");
+	const locale = await getLocale();
+
+	return {
+		metadataBase: new URL(env.BETTER_AUTH_URL),
+		title: { default: t("title"), template: `%s · ${t("title")}` },
+		description: t("description"),
+		openGraph: {
+			title: t("title"),
+			description: t("description"),
+			siteName: t("title"),
+			locale: locale === "pt" ? "pt_BR" : "en_US",
+			type: "website",
+			images: ["/opengraph-image"],
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: t("title"),
+			description: t("description"),
+			images: ["/opengraph-image"],
+		},
+	};
+}
 
 export default async function RootLayout({
 	children,

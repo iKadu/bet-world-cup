@@ -77,7 +77,7 @@ export default async function PredictionsPage() {
 				</p>
 			) : (
 				<div className="overflow-hidden rounded-xl border">
-					<div className="grid grid-cols-[100px_1fr_110px_110px_110px_90px] gap-3 border-b bg-surface-row px-5 py-2.5 font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
+					<div className="hidden grid-cols-[100px_1fr_110px_110px_110px_90px] gap-3 border-b bg-surface-row px-5 py-2.5 font-mono text-[10px] text-muted-foreground uppercase tracking-widest sm:grid">
 						<span>{t("colGroup")}</span>
 						<span>{t("colMatch")}</span>
 						<span>{t("colYourPick")}</span>
@@ -88,12 +88,12 @@ export default async function PredictionsPage() {
 					{rows.map(({ prediction, match, homeTeam, awayTeam }) => (
 						<div
 							key={prediction.id}
-							className="grid grid-cols-[100px_1fr_110px_110px_110px_90px] items-center gap-3 border-b px-5 py-3.5 last:border-b-0"
+							className="grid grid-cols-3 items-center gap-x-3 gap-y-1.5 border-b px-5 py-3 last:border-b-0 sm:grid-cols-[100px_1fr_110px_110px_110px_90px] sm:gap-y-0 sm:py-3.5"
 						>
-							<span className="font-mono text-[11px] text-muted-foreground">
+							<span className="col-start-1 row-start-1 font-mono text-[11px] text-muted-foreground sm:col-start-auto sm:row-start-auto">
 								{match.groupId ?? tStages(match.stage)}
 							</span>
-							<span className="flex items-center gap-1.5 truncate font-display font-semibold text-sm">
+							<span className="col-span-3 row-start-2 flex items-center gap-1.5 truncate font-display font-semibold text-sm sm:col-span-1 sm:col-start-auto sm:row-start-auto">
 								<TeamFlag tla={homeTeam?.tla} />
 								<span className="truncate">
 									{homeTeam?.name ?? tCommon("teamTbd")}
@@ -104,18 +104,18 @@ export default async function PredictionsPage() {
 								</span>
 								<TeamFlag tla={awayTeam?.tla} />
 							</span>
-							<span className="font-bold font-mono text-base">
+							<span className="col-start-1 row-start-3 font-bold font-mono text-base sm:col-start-auto sm:row-start-auto">
 								{prediction.homeScoreGuess}–{prediction.awayScoreGuess}
 							</span>
-							<span className="font-bold font-mono text-base text-foreground/70">
+							<span className="col-start-2 row-start-3 font-bold font-mono text-base text-foreground/70 sm:col-start-auto sm:row-start-auto">
 								{match.homeScore !== null && match.awayScore !== null
 									? `${match.homeScore}–${match.awayScore}`
 									: "–"}
 							</span>
-							<span>
+							<span className="col-start-3 row-start-1 sm:col-start-auto sm:row-start-auto">
 								<MatchStatusBadge status={match.status} />
 							</span>
-							<span className="flex justify-end">
+							<span className="col-start-3 row-start-3 flex justify-end sm:col-start-auto sm:row-start-auto">
 								<PointsBadge points={prediction.pointsEarned} />
 							</span>
 						</div>

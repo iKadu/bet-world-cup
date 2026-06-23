@@ -35,7 +35,7 @@ const STAGES = [
 type Stage = (typeof STAGES)[number];
 
 const ROW_GRID =
-	"grid grid-cols-[90px_1fr_auto_1fr_minmax(130px,auto)] items-center gap-3 rounded-lg border bg-surface-row px-4 py-3.5 sm:gap-4 sm:px-5";
+	"grid grid-cols-3 items-center gap-x-3 gap-y-1.5 rounded-lg border bg-surface-row px-4 py-3 sm:grid-cols-[90px_1fr_auto_1fr_minmax(130px,auto)] sm:gap-4 sm:px-5 sm:py-3.5";
 
 type MatchRow = {
 	match: typeof matchesTable.$inferSelect;
@@ -280,7 +280,7 @@ function MatchRowItem({
 	);
 
 	const groupCell: ReactNode = (
-		<div className="flex flex-col gap-0.5">
+		<div className="col-start-1 row-start-1 flex flex-col gap-0.5 sm:col-start-auto sm:row-start-auto">
 			<span className="font-mono text-[10px] text-muted-foreground uppercase tracking-wide">
 				{match.groupId
 					? t("group", { id: match.groupId })
@@ -293,14 +293,14 @@ function MatchRowItem({
 	);
 
 	const homeCell: ReactNode = (
-		<div className="flex items-center justify-end gap-1.5 truncate font-display font-semibold text-sm">
+		<div className="col-start-1 row-start-2 flex items-center justify-end gap-1.5 truncate font-display font-semibold text-sm sm:col-start-auto sm:row-start-auto">
 			<TeamFlag tla={homeTeam?.tla} />
 			<span className="truncate">{homeTeam?.name ?? tCommon("teamTbd")}</span>
 		</div>
 	);
 
 	const awayCell: ReactNode = (
-		<div className="flex items-center gap-1.5 truncate font-display font-semibold text-sm">
+		<div className="col-start-3 row-start-2 flex items-center gap-1.5 truncate font-display font-semibold text-sm sm:col-start-auto sm:row-start-auto">
 			<span className="truncate">{awayTeam?.name ?? tCommon("teamTbd")}</span>
 			<TeamFlag tla={awayTeam?.tla} />
 		</div>
@@ -322,7 +322,7 @@ function MatchRowItem({
 		<div className={rowClassName}>
 			{groupCell}
 			{homeCell}
-			<div className="flex h-[54px] items-center justify-center">
+			<div className="col-start-2 row-start-2 flex h-[54px] items-center justify-center sm:col-start-auto sm:row-start-auto">
 				{locked ? (
 					<span className="font-bold font-mono text-2xl tabular-nums">
 						{match.homeScore ?? "–"}
@@ -338,7 +338,7 @@ function MatchRowItem({
 				)}
 			</div>
 			{awayCell}
-			<div className="flex flex-col items-end gap-1.5">
+			<div className="col-start-3 row-start-1 flex flex-col items-end gap-1.5 sm:col-start-auto sm:row-start-auto">
 				{locked && <MatchStatusBadge status={match.status} />}
 				{!locked && prediction && (
 					<span className="font-mono text-[11px] text-muted-foreground uppercase tracking-wide">

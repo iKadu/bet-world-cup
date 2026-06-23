@@ -226,21 +226,21 @@ export default async function Home() {
 							{matchesToPredict.map(({ match, homeTeam, awayTeam }) => (
 								<div
 									key={match.id}
-									className="grid grid-cols-[110px_1fr_auto_1fr_90px] items-center gap-3 rounded-lg border bg-surface-row px-4 py-3"
+									className="grid grid-cols-3 items-center gap-x-3 gap-y-1.5 rounded-lg border bg-surface-row px-4 py-3 sm:grid-cols-[110px_1fr_auto_1fr_90px] sm:gap-y-0"
 								>
-									<span className="font-mono text-[11px] text-accent-text">
+									<span className="col-start-1 row-start-1 font-mono text-[11px] text-accent-text sm:col-start-auto sm:row-start-auto">
 										{dateFormatter.format(match.kickoff)}
 									</span>
-									<span className="flex items-center justify-end gap-1.5 truncate font-display font-semibold text-sm">
+									<span className="col-start-1 row-start-2 flex items-center justify-end gap-1.5 truncate font-display font-semibold text-sm sm:col-start-auto sm:row-start-auto">
 										<TeamFlag tla={homeTeam?.tla} />
 										<span className="truncate">
 											{homeTeam?.name ?? tCommon("teamTbd")}
 										</span>
 									</span>
-									<span className="font-bold font-mono text-muted-foreground text-sm">
+									<span className="col-start-2 row-start-2 font-bold font-mono text-muted-foreground text-sm sm:col-start-auto sm:row-start-auto">
 										– : –
 									</span>
-									<span className="flex items-center gap-1.5 truncate font-display font-semibold text-sm">
+									<span className="col-start-3 row-start-2 flex items-center gap-1.5 truncate font-display font-semibold text-sm sm:col-start-auto sm:row-start-auto">
 										<span className="truncate">
 											{awayTeam?.name ?? tCommon("teamTbd")}
 										</span>
@@ -248,7 +248,7 @@ export default async function Home() {
 									</span>
 									<Button
 										size="sm"
-										className="justify-self-end"
+										className="col-start-3 row-start-1 justify-self-end sm:col-start-auto sm:row-start-auto"
 										nativeButton={false}
 										render={<Link href="/matches" />}
 									>
