@@ -5,7 +5,15 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+			"outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+			"env": [
+				"DATABASE_URL",
+				"CORS_ORIGIN",
+				"BETTER_AUTH_SECRET",
+				"BETTER_AUTH_URL",
+				"FOOTBALL_DATA_API_KEY",
+				"CRON_SECRET"
+			]
 		},
 		"lint": {
 			"dependsOn": ["^lint"]
