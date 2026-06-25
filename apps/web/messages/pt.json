@@ -29,6 +29,12 @@
 		"noOtherPicks": "Ainda ninguém mais palpitou nessa partida.",
 		"you": "Você"
 	},
+	"ErrorBoundary": {
+		"eyebrow": "Ops",
+		"title": "Algo deu errado",
+		"description": "Tivemos um problema ao carregar essa página. Tente novamente em alguns instantes.",
+		"retry": "Tentar novamente"
+	},
 	"LanguageSwitcher": {
 		"label": "Idioma"
 	},
@@ -83,7 +89,8 @@
 		"save": "Salvar",
 		"saving": "...",
 		"saveSuccess": "Palpite salvo!",
-		"saved": "✓ Salvo"
+		"saved": "✓ Salvo",
+		"searchPlaceholder": "Buscar por seleção... (/)"
 	},
 	"PredictionErrors": {
 		"mustSignIn": "Você precisa entrar para palpitar.",
@@ -104,7 +111,8 @@
 		"colResult": "Resultado",
 		"colStatus": "Status",
 		"colPoints": "Pontos",
-		"vs": "vs"
+		"vs": "vs",
+		"exportJson": "Exportar JSON"
 	},
 	"Leaderboard": {
 		"title": "Ranking global",
@@ -117,6 +125,7 @@
 		"colExact": "Exatos",
 		"colPoints": "Pontos",
 		"you": "Você",
+		"searchPlaceholder": "Buscar jogador... (/)",
 		"scoringTitle": "Como funciona a pontuação",
 		"scoringExact": "Placar exato",
 		"scoringExactDesc": "Acertou o placar completo da partida",
@@ -145,6 +154,8 @@
 		"signInLink": "Entrar",
 		"nameLabel": "Nome",
 		"passwordHint": "8+ caracteres",
+		"passwordHintProgress": "{count}/8 caracteres",
+		"emailInvalid": "Email inválido.",
 		"submit": "Criar conta",
 		"submitting": "Criando conta...",
 		"success": "Conta criada com sucesso!",

@@ -2,10 +2,10 @@
 
 import { Button } from "@world-cup/ui/components/button";
 import { ScoreInput } from "@world-cup/ui/components/score-input";
+import { useActionToast } from "@world-cup/ui/hooks/use-action-toast";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { useActionState, useEffect } from "react";
-import { toast } from "sonner";
+import { useActionState } from "react";
 import { submitPrediction } from "./actions";
 
 interface PredictionFormRowProps {
@@ -26,15 +26,7 @@ export function PredictionFormRow({
 	const t = useTranslations("Matches");
 	const [state, formAction, isPending] = useActionState(submitPrediction, null);
 
-	useEffect(() => {
-		if (!state) return;
-
-		if (state.success) {
-			toast.success(t("saveSuccess"));
-		} else {
-			toast.error(state.error);
-		}
-	}, [state, t]);
+	useActionToast(state, { successMessage: t("saveSuccess") });
 
 	return (
 		<form action={formAction} className={className}>

@@ -1,29 +1,29 @@
 "use client";
 
 import { Button } from "@world-cup/ui/components/button";
+import { useActionToast } from "@world-cup/ui/hooks/use-action-toast";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
-import { toast } from "sonner";
+import { useState, useTransition } from "react";
 import { triggerManualSync } from "./actions";
 
 export function SyncTriggerButton() {
 	const t = useTranslations("AdminSync");
 	const [isPending, startTransition] = useTransition();
+	const [result, setResult] = useState<Awaited<
+		ReturnType<typeof triggerManualSync>
+	> | null>(null);
+
+	useActionToast(result, {
+		successMessage: (r) =>
+			t("triggerSuccess", {
+				updated: r.matchesUpserted,
+				finalized: r.matchesFinalized,
+			}),
+	});
 
 	function handleClick() {
 		startTransition(async () => {
-			const result = await triggerManualSync();
-
-			if (result.success) {
-				toast.success(
-					t("triggerSuccess", {
-						updated: result.matchesUpserted,
-						finalized: result.matchesFinalized,
-					}),
-				);
-			} else {
-				toast.error(result.error);
-			}
+			setResult(await triggerManualSync());
 		});
 	}
 

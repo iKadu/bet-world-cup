@@ -5,6 +5,7 @@ import { Button } from "@world-cup/ui/components/button";
 import { Input } from "@world-cup/ui/components/input";
 import { Label } from "@world-cup/ui/components/label";
 import { PasswordInput } from "@world-cup/ui/components/password-input";
+import { cn } from "@world-cup/ui/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -12,18 +13,24 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { AuthShell } from "../auth-shell";
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_PASSWORD_LENGTH = 8;
+
 export default function SignUpPage() {
 	const router = useRouter();
 	const t = useTranslations("SignUp");
 	const tAuth = useTranslations("Auth");
 	const [isLoading, setIsLoading] = useState(false);
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+
+	const isEmailValid = email === "" || EMAIL_PATTERN.test(email);
+	const isPasswordValid = password.length >= MIN_PASSWORD_LENGTH;
 
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		const formData = new FormData(event.currentTarget);
 		const name = String(formData.get("name"));
-		const email = String(formData.get("email"));
-		const password = String(formData.get("password"));
 
 		setIsLoading(true);
 		const { error } = await authClient.signUp.email({ name, email, password });
@@ -81,8 +88,16 @@ export default function SignUpPage() {
 						type="email"
 						required
 						autoComplete="email"
+						value={email}
+						onChange={(event) => setEmail(event.target.value)}
+						aria-invalid={email !== "" && !isEmailValid}
 						className="h-12 rounded-lg"
 					/>
+					{email !== "" && !isEmailValid && (
+						<span className="font-mono text-[10px] text-destructive">
+							{t("emailInvalid")}
+						</span>
+					)}
 				</div>
 				<div className="grid gap-1.5">
 					<Label
@@ -97,10 +112,24 @@ export default function SignUpPage() {
 						required
 						minLength={8}
 						autoComplete="new-password"
+						value={password}
+						onChange={(event) => setPassword(event.target.value)}
+						aria-invalid={password !== "" && !isPasswordValid}
 						className="h-12 rounded-lg"
 					/>
-					<span className="font-mono text-[10px] text-muted-foreground">
-						{t("passwordHint")}
+					<span
+						className={cn(
+							"font-mono text-[10px]",
+							password === ""
+								? "text-muted-foreground"
+								: isPasswordValid
+									? "text-accent-text"
+									: "text-destructive",
+						)}
+					>
+						{password === ""
+							? t("passwordHint")
+							: t("passwordHintProgress", { count: password.length })}
 					</span>
 				</div>
 				<Button

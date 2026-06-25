@@ -7,6 +7,7 @@ import type {
 	teams as teamsTable,
 } from "@world-cup/db/schema";
 import { TeamFlag } from "@world-cup/ui/components/flag";
+import { Input } from "@world-cup/ui/components/input";
 import { MatchStatusBadge } from "@world-cup/ui/components/match-status-badge";
 import { PointsBadge } from "@world-cup/ui/components/points-badge";
 import {
@@ -15,11 +16,13 @@ import {
 	TabsList,
 	TabsTrigger,
 } from "@world-cup/ui/components/tabs";
+import { useDebouncedValue } from "@world-cup/ui/hooks/use-debounced-value";
+import { useFocusShortcut } from "@world-cup/ui/hooks/use-focus-shortcut";
 import { cn } from "@world-cup/ui/lib/utils";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { PredictionFormRow } from "./prediction-form-row";
 
 const STAGES = [
@@ -60,6 +63,10 @@ export function MatchesView({
 	const tStages = useTranslations("Stages");
 	const locale = useLocale();
 	const [stageFilter, setStageFilter] = useState<Stage | null>(null);
+	const [searchQuery, setSearchQuery] = useState("");
+	const debouncedQuery = useDebouncedValue(searchQuery, 250);
+	const searchInputRef = useRef<HTMLInputElement>(null);
+	useFocusShortcut("/", searchInputRef);
 
 	const dateFormatter = useMemo(
 		() =>
@@ -78,13 +85,18 @@ export function MatchesView({
 		[predictions],
 	);
 
-	const filteredRows = useMemo(
-		() =>
-			stageFilter
-				? rows.filter((row) => row.match.stage === stageFilter)
-				: rows,
-		[rows, stageFilter],
-	);
+	const filteredRows = useMemo(() => {
+		const query = debouncedQuery.trim().toLowerCase();
+
+		return rows.filter((row) => {
+			const matchesStage = !stageFilter || row.match.stage === stageFilter;
+			const matchesQuery =
+				!query ||
+				row.homeTeam?.name.toLowerCase().includes(query) ||
+				row.awayTeam?.name.toLowerCase().includes(query);
+			return matchesStage && matchesQuery;
+		});
+	}, [rows, stageFilter, debouncedQuery]);
 
 	const upcoming = filteredRows.filter((row) => !isMatchLocked(row.match));
 	const finished = filteredRows.filter(
@@ -99,6 +111,15 @@ export function MatchesView({
 			<h1 className="mb-5 font-display font-extrabold text-3xl">
 				{t("title")}
 			</h1>
+
+			<Input
+				ref={searchInputRef}
+				type="search"
+				value={searchQuery}
+				onChange={(event) => setSearchQuery(event.target.value)}
+				placeholder={t("searchPlaceholder")}
+				className="mb-3 h-9 max-w-xs rounded-lg"
+			/>
 
 			<div className="mb-5 flex flex-wrap gap-2">
 				<StageChip

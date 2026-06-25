@@ -10,6 +10,10 @@ import { alias } from "drizzle-orm/pg-core";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import {
+	ExportPredictionsButton,
+	type ExportRow,
+} from "./export-predictions-button";
 
 const homeTeams = alias(teams, "home_teams");
 const awayTeams = alias(teams, "away_teams");
@@ -46,6 +50,19 @@ export default async function PredictionsPage() {
 	const exactCount = rows.filter(
 		(row) => row.prediction.pointsEarned === POINTS_EXACT_SCORE,
 	).length;
+	const exportRows: ExportRow[] = rows.map(
+		({ prediction, match, homeTeam, awayTeam }) => ({
+			group: match.groupId,
+			stage: match.stage,
+			homeTeam: homeTeam?.name ?? tCommon("teamTbd"),
+			awayTeam: awayTeam?.name ?? tCommon("teamTbd"),
+			homeScoreGuess: prediction.homeScoreGuess,
+			awayScoreGuess: prediction.awayScoreGuess,
+			homeScore: match.homeScore,
+			awayScore: match.awayScore,
+			pointsEarned: prediction.pointsEarned,
+		}),
+	);
 	const scoredRows = rows.filter((row) => row.prediction.pointsEarned !== null);
 	const hitRate =
 		scoredRows.length > 0
@@ -62,7 +79,12 @@ export default async function PredictionsPage() {
 			<div className="relative mb-6 overflow-hidden rounded-xl border bg-card px-5 py-6 sm:px-7">
 				<div className="pointer-events-none absolute top-0 left-0 size-64 rounded-full bg-accent-lime/10 blur-3xl" />
 				<div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-					<h1 className="font-display font-extrabold text-3xl">{t("title")}</h1>
+					<div className="flex items-center gap-3">
+						<h1 className="font-display font-extrabold text-3xl">
+							{t("title")}
+						</h1>
+						{rows.length > 0 && <ExportPredictionsButton rows={exportRows} />}
+					</div>
 					<div className="flex gap-6">
 						<Stat label={t("points")} value={totalPoints} highlight />
 						<Stat label={t("exactScores")} value={exactCount} />

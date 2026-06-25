@@ -29,6 +29,12 @@
 		"noOtherPicks": "No one else has predicted this match yet.",
 		"you": "You"
 	},
+	"ErrorBoundary": {
+		"eyebrow": "Oops",
+		"title": "Something went wrong",
+		"description": "We had trouble loading this page. Please try again in a moment.",
+		"retry": "Try again"
+	},
 	"LanguageSwitcher": {
 		"label": "Language"
 	},
@@ -83,7 +89,8 @@
 		"save": "Save",
 		"saving": "...",
 		"saveSuccess": "Prediction saved!",
-		"saved": "✓ Saved"
+		"saved": "✓ Saved",
+		"searchPlaceholder": "Search by team... (/)"
 	},
 	"PredictionErrors": {
 		"mustSignIn": "You need to sign in to predict.",
@@ -104,7 +111,8 @@
 		"colResult": "Result",
 		"colStatus": "Status",
 		"colPoints": "Points",
-		"vs": "vs"
+		"vs": "vs",
+		"exportJson": "Export JSON"
 	},
 	"Leaderboard": {
 		"title": "Global ranking",
@@ -117,6 +125,7 @@
 		"colExact": "Exact",
 		"colPoints": "Points",
 		"you": "You",
+		"searchPlaceholder": "Search player... (/)",
 		"scoringTitle": "How scoring works",
 		"scoringExact": "Exact score",
 		"scoringExactDesc": "Got the full match score right",
@@ -145,6 +154,8 @@
 		"signInLink": "Sign in",
 		"nameLabel": "Name",
 		"passwordHint": "8+ characters",
+		"passwordHintProgress": "{count}/8 characters",
+		"emailInvalid": "Invalid email.",
 		"submit": "Create account",
 		"submitting": "Creating account...",
 		"success": "Account created successfully!",
