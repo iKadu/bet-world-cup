@@ -4,6 +4,7 @@ import { isMatchLocked } from "@world-cup/db/lib/match-lock";
 import { matches, predictions, teams, user } from "@world-cup/db/schema";
 import { and, eq, gt, inArray } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
+import { GitCompareIcon } from "lucide-react";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -76,9 +77,10 @@ export default async function ComparePage() {
 			<p className="mb-6 text-muted-foreground text-sm">{t("subtitle")}</p>
 
 			{rows.length === 0 ? (
-				<p className="rounded-lg border bg-surface-row py-10 text-center text-muted-foreground text-sm">
+				<div className="flex flex-col items-center gap-2 rounded-lg border bg-surface-row py-10 text-center text-muted-foreground text-sm">
+					<GitCompareIcon className="size-6" />
 					{t("empty")}
-				</p>
+				</div>
 			) : (
 				<div className="flex flex-col gap-4">
 					{rows.map(({ match, homeTeam, awayTeam }) => {

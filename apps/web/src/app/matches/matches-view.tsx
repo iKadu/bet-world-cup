@@ -7,7 +7,6 @@ import type {
 	teams as teamsTable,
 } from "@world-cup/db/schema";
 import { TeamFlag } from "@world-cup/ui/components/flag";
-import { Input } from "@world-cup/ui/components/input";
 import { MatchStatusBadge } from "@world-cup/ui/components/match-status-badge";
 import { PointsBadge } from "@world-cup/ui/components/points-badge";
 import {
@@ -16,13 +15,13 @@ import {
 	TabsList,
 	TabsTrigger,
 } from "@world-cup/ui/components/tabs";
-import { useDebouncedValue } from "@world-cup/ui/hooks/use-debounced-value";
-import { useFocusShortcut } from "@world-cup/ui/hooks/use-focus-shortcut";
 import { cn } from "@world-cup/ui/lib/utils";
+import { CalendarOffIcon, XIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { PredictionFormRow } from "./prediction-form-row";
 
 const STAGES = [
@@ -62,11 +61,10 @@ export function MatchesView({
 	const t = useTranslations("Matches");
 	const tStages = useTranslations("Stages");
 	const locale = useLocale();
+	const router = useRouter();
+	const searchParams = useSearchParams();
+	const teamFilter = searchParams.get("team");
 	const [stageFilter, setStageFilter] = useState<Stage | null>(null);
-	const [searchQuery, setSearchQuery] = useState("");
-	const debouncedQuery = useDebouncedValue(searchQuery, 250);
-	const searchInputRef = useRef<HTMLInputElement>(null);
-	useFocusShortcut("/", searchInputRef);
 
 	const dateFormatter = useMemo(
 		() =>
@@ -85,18 +83,31 @@ export function MatchesView({
 		[predictions],
 	);
 
-	const filteredRows = useMemo(() => {
-		const query = debouncedQuery.trim().toLowerCase();
+	const teamFilterName = useMemo(() => {
+		if (!teamFilter) return null;
+		const row = rows.find(
+			(item) =>
+				item.homeTeam?.id === teamFilter || item.awayTeam?.id === teamFilter,
+		);
+		return row?.homeTeam?.id === teamFilter
+			? row.homeTeam?.name
+			: row?.awayTeam?.name;
+	}, [rows, teamFilter]);
 
+	const filteredRows = useMemo(() => {
 		return rows.filter((row) => {
 			const matchesStage = !stageFilter || row.match.stage === stageFilter;
-			const matchesQuery =
-				!query ||
-				row.homeTeam?.name.toLowerCase().includes(query) ||
-				row.awayTeam?.name.toLowerCase().includes(query);
-			return matchesStage && matchesQuery;
+			const matchesTeam =
+				!teamFilter ||
+				row.homeTeam?.id === teamFilter ||
+				row.awayTeam?.id === teamFilter;
+			return matchesStage && matchesTeam;
 		});
-	}, [rows, stageFilter, debouncedQuery]);
+	}, [rows, stageFilter, teamFilter]);
+
+	function clearTeamFilter() {
+		router.push("/matches");
+	}
 
 	const upcoming = filteredRows.filter((row) => !isMatchLocked(row.match));
 	const finished = filteredRows.filter(
@@ -112,14 +123,16 @@ export function MatchesView({
 				{t("title")}
 			</h1>
 
-			<Input
-				ref={searchInputRef}
-				type="search"
-				value={searchQuery}
-				onChange={(event) => setSearchQuery(event.target.value)}
-				placeholder={t("searchPlaceholder")}
-				className="mb-3 h-9 max-w-xs rounded-lg"
-			/>
+			{teamFilter && teamFilterName && (
+				<button
+					type="button"
+					onClick={clearTeamFilter}
+					className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 font-mono text-[11px] text-primary-foreground uppercase tracking-wide"
+				>
+					{t("filteredBy", { team: teamFilterName })}
+					<XIcon className="size-3" />
+				</button>
+			)}
 
 			<div className="mb-5 flex flex-wrap gap-2">
 				<StageChip
@@ -245,9 +258,10 @@ function MatchRows({
 
 	if (rows.length === 0) {
 		return (
-			<p className="py-10 text-center text-muted-foreground text-sm">
+			<div className="flex flex-col items-center gap-2 py-10 text-center text-muted-foreground text-sm">
+				<CalendarOffIcon className="size-6" />
 				{t("empty")}
-			</p>
+			</div>
 		);
 	}
 

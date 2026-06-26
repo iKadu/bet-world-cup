@@ -19,6 +19,13 @@
 		"title": "WC26 Predictor",
 		"description": "Bolão da Copa do Mundo 2026. Dê seu palpite, suba no ranking e dispute com os amigos."
 	},
+	"CommandPalette": {
+		"placeholder": "Buscar páginas, seleções ou jogadores...",
+		"empty": "Nenhum resultado encontrado.",
+		"page": "Página",
+		"team": "Seleção",
+		"player": "Jogador"
+	},
 	"Compare": {
 		"title": "Comparar palpites",
 		"subtitle": "Veja o que a galera apostou nos próximos jogos e nos que estão rolando agora.",
@@ -65,7 +72,8 @@
 		"homeWin": "Casa",
 		"draw": "Empate",
 		"awayWin": "Fora",
-		"noPredictionsYet": "Ainda sem palpites para essa partida."
+		"noPredictionsYet": "Ainda sem palpites para essa partida.",
+		"streak": "Sequência"
 	},
 	"Stages": {
 		"GROUP_STAGE": "Grupos",
@@ -90,7 +98,7 @@
 		"saving": "...",
 		"saveSuccess": "Palpite salvo!",
 		"saved": "✓ Salvo",
-		"searchPlaceholder": "Buscar por seleção... (/)"
+		"filteredBy": "Filtrado por: {team}"
 	},
 	"PredictionErrors": {
 		"mustSignIn": "Você precisa entrar para palpitar.",
@@ -125,7 +133,6 @@
 		"colExact": "Exatos",
 		"colPoints": "Pontos",
 		"you": "Você",
-		"searchPlaceholder": "Buscar jogador... (/)",
 		"scoringTitle": "Como funciona a pontuação",
 		"scoringExact": "Placar exato",
 		"scoringExactDesc": "Acertou o placar completo da partida",

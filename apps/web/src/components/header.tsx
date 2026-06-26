@@ -14,7 +14,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@world-cup/ui/components/dropdown-menu";
-import { cn } from "@world-cup/ui/lib/utils";
+import { cn, getInitials } from "@world-cup/ui/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -22,17 +22,6 @@ import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "./language-switcher";
 import { MobileNav } from "./mobile-nav";
 import { ModeToggle } from "./mode-toggle";
-
-function getInitials(name: string) {
-	const initials = name
-		.trim()
-		.split(/\s+/)
-		.slice(0, 2)
-		.map((part) => part[0] ?? "")
-		.join("");
-
-	return initials.toUpperCase() || "?";
-}
 
 interface HeaderProps {
 	session: ServerSession;

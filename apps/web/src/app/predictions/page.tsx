@@ -7,6 +7,7 @@ import { MatchStatusBadge } from "@world-cup/ui/components/match-status-badge";
 import { PointsBadge } from "@world-cup/ui/components/points-badge";
 import { eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
+import { ClipboardListIcon } from "lucide-react";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
@@ -94,9 +95,10 @@ export default async function PredictionsPage() {
 			</div>
 
 			{rows.length === 0 ? (
-				<p className="py-10 text-center text-muted-foreground text-sm">
+				<div className="flex flex-col items-center gap-2 py-10 text-center text-muted-foreground text-sm">
+					<ClipboardListIcon className="size-6" />
 					{t("empty")}
-				</p>
+				</div>
 			) : (
 				<div className="overflow-hidden rounded-xl border">
 					<div className="hidden grid-cols-[100px_1fr_110px_110px_110px_90px] gap-3 border-b bg-surface-row px-5 py-2.5 font-mono text-[10px] text-muted-foreground uppercase tracking-widest sm:grid">

@@ -19,6 +19,13 @@
 		"title": "WC26 Predictor",
 		"description": "World Cup 2026 prediction pool. Make your picks, climb the leaderboard, and compete with friends."
 	},
+	"CommandPalette": {
+		"placeholder": "Search pages, teams, or players...",
+		"empty": "No results found.",
+		"page": "Page",
+		"team": "Team",
+		"player": "Player"
+	},
 	"Compare": {
 		"title": "Compare predictions",
 		"subtitle": "See what everyone else picked for the upcoming matches and the ones live right now.",
@@ -65,7 +72,8 @@
 		"homeWin": "Home",
 		"draw": "Draw",
 		"awayWin": "Away",
-		"noPredictionsYet": "No predictions yet for this match."
+		"noPredictionsYet": "No predictions yet for this match.",
+		"streak": "Streak"
 	},
 	"Stages": {
 		"GROUP_STAGE": "Group",
@@ -90,7 +98,7 @@
 		"saving": "...",
 		"saveSuccess": "Prediction saved!",
 		"saved": "✓ Saved",
-		"searchPlaceholder": "Search by team... (/)"
+		"filteredBy": "Filtered by: {team}"
 	},
 	"PredictionErrors": {
 		"mustSignIn": "You need to sign in to predict.",
@@ -125,7 +133,6 @@
 		"colExact": "Exact",
 		"colPoints": "Points",
 		"you": "You",
-		"searchPlaceholder": "Search player... (/)",
 		"scoringTitle": "How scoring works",
 		"scoringExact": "Exact score",
 		"scoringExactDesc": "Got the full match score right",

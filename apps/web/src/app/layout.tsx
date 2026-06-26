@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import "../index.css";
+import { CommandPalette } from "@/components/command-palette";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
 
@@ -71,6 +72,7 @@ export default async function RootLayout({
 							<Header session={session} />
 							{children}
 						</div>
+						<CommandPalette isAdmin={session?.user.role === "admin"} />
 					</Providers>
 				</NextIntlClientProvider>
 			</body>

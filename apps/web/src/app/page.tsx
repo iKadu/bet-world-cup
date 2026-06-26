@@ -3,12 +3,16 @@ import { db } from "@world-cup/db";
 import { matches, predictions, teams } from "@world-cup/db/schema";
 import { Button } from "@world-cup/ui/components/button";
 import { Card, CardContent } from "@world-cup/ui/components/card";
+import { CountUpNumber } from "@world-cup/ui/components/count-up-number";
 import { TeamFlag } from "@world-cup/ui/components/flag";
+import { cn } from "@world-cup/ui/lib/utils";
 import { and, count, eq, gt, inArray, notInArray } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
+import { FlameIcon } from "lucide-react";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getLeaderboard } from "@/lib/ranking";
+import { getCurrentStreak } from "@/lib/streaks";
 
 const homeTeams = alias(teams, "home_teams");
 const awayTeams = alias(teams, "away_teams");
@@ -64,6 +68,7 @@ export default async function Home() {
 		? leaderboard.findIndex((row) => row.userId === session.user.id)
 		: -1;
 	const myRank = myRankIndex >= 0 ? leaderboard[myRankIndex] : undefined;
+	const myStreak = session ? await getCurrentStreak(session.user.id) : 0;
 
 	const confidenceMatchIds = matchesToPredict.map((row) => row.match.id);
 	const confidencePredictions = confidenceMatchIds.length
@@ -137,7 +142,13 @@ export default async function Home() {
 								<div className="flex items-center gap-6">
 									<div className="flex flex-col">
 										<span className="font-bold font-mono text-5xl">
-											{myRank ? `#${myRankIndex + 1}` : "—"}
+											{myRank ? (
+												<>
+													#<CountUpNumber value={myRankIndex + 1} />
+												</>
+											) : (
+												"—"
+											)}
 										</span>
 										<span className="font-mono text-[11px] text-muted-foreground">
 											{t("ofPlayers", { count: leaderboard.length })}
@@ -158,6 +169,14 @@ export default async function Home() {
 											label={t("predictionsMade")}
 											value={myPredictions.length}
 										/>
+										{myStreak >= 2 && (
+											<MiniStat
+												label={t("streak")}
+												value={myStreak}
+												icon={FlameIcon}
+												accent
+											/>
+										)}
 									</div>
 								</div>
 							) : (
@@ -344,21 +363,23 @@ function MiniStat({
 	label,
 	value,
 	accent = false,
+	icon: Icon,
 }: {
 	label: string;
 	value: number;
 	accent?: boolean;
+	icon?: typeof FlameIcon;
 }) {
 	return (
 		<div className="flex flex-col">
 			<span
-				className={
-					accent
-						? "font-bold font-mono text-2xl text-accent-text"
-						: "font-bold font-mono text-2xl"
-				}
+				className={cn(
+					"flex items-center gap-1 font-bold font-mono text-2xl",
+					accent && "text-accent-text",
+				)}
 			>
-				{value}
+				{Icon && <Icon className="size-4" />}
+				<CountUpNumber value={value} />
 			</span>
 			<span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
 				{label}
