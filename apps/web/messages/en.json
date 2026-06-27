@@ -18,8 +18,7 @@
 		"navGroupMenu": "Menu",
 		"navGroupCompete": "Compete",
 		"navGroupAdmin": "Admin",
-		"liveNow": "{count, plural, one {# match live now} other {# matches live now}}",
-		"rankPoints": "#{rank} · {points} pts"
+		"liveNow": "{count, plural, one {# match live now} other {# matches live now}}"
 	},
 	"Metadata": {
 		"title": "WC26 Predictor",

@@ -15,7 +15,7 @@ import {
 	DropdownMenuTrigger,
 } from "@world-cup/ui/components/dropdown-menu";
 import { cn, getInitials } from "@world-cup/ui/lib/utils";
-import { SearchIcon } from "lucide-react";
+import { ChevronsUpDownIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -115,7 +115,7 @@ export function Sidebar({ session, data }: SidebarProps) {
 				))}
 			</nav>
 
-			<div className="mt-auto flex flex-col gap-3 pt-3">
+			<div className="mt-auto flex flex-col gap-3 border-t pt-3">
 				{data.liveMatches.length > 0 && (
 					<div className="rounded-lg border border-live/40 bg-live/10 p-3">
 						<div className="mb-1.5 flex items-center gap-1.5 font-mono text-[11px] text-live-foreground uppercase tracking-wide">
@@ -135,9 +135,9 @@ export function Sidebar({ session, data }: SidebarProps) {
 					</div>
 				)}
 
-				<div className="grid grid-cols-2 gap-2">
-					<LanguageSwitcher />
-					<ModeToggle />
+				<div className="grid grid-cols-2 divide-x overflow-hidden rounded-lg border bg-sidebar">
+					<LanguageSwitcher className="h-9 w-full justify-center rounded-none" />
+					<ModeToggle className="h-9 w-full rounded-none" />
 				</div>
 
 				{session ? (
@@ -145,7 +145,7 @@ export function Sidebar({ session, data }: SidebarProps) {
 						<DropdownMenuTrigger
 							render={
 								<Button
-									variant="outline"
+									variant="ghost"
 									className="h-auto justify-start gap-2.5 px-2.5 py-2"
 								/>
 							}
@@ -160,15 +160,17 @@ export function Sidebar({ session, data }: SidebarProps) {
 									{session.user.name}
 								</span>
 								<span className="font-mono text-[10px] text-muted-foreground">
-									{data.userRank
-										? t("rankPoints", {
-												rank: data.userRank,
-												points: data.userPoints,
-											})
-										: "—"}
+									{data.userRank ? (
+										<>
+											<span className="text-accent-text">#{data.userRank}</span>{" "}
+											· {data.userPoints} pts
+										</>
+									) : (
+										"—"
+									)}
 								</span>
 							</div>
-							<span className="ml-auto text-muted-foreground text-xs">▾</span>
+							<ChevronsUpDownIcon className="ml-auto size-3.5 text-muted-foreground" />
 						</DropdownMenuTrigger>
 						<DropdownMenuContent>
 							<DropdownMenuGroup>
