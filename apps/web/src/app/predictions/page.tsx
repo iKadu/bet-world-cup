@@ -11,6 +11,7 @@ import { ClipboardListIcon } from "lucide-react";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Topbar } from "@/components/topbar";
 import {
 	ExportPredictionsButton,
 	type ExportRow,
@@ -76,76 +77,70 @@ export default async function PredictionsPage() {
 			: 0;
 
 	return (
-		<div className="mx-auto max-w-4xl px-5 py-8 sm:px-7">
-			<div className="relative mb-6 overflow-hidden rounded-xl border bg-card px-5 py-6 sm:px-7">
-				<div className="pointer-events-none absolute top-0 left-0 size-64 rounded-full bg-accent-lime/10 blur-3xl" />
-				<div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-					<div className="flex items-center gap-3">
-						<h1 className="font-display font-extrabold text-3xl">
-							{t("title")}
-						</h1>
-						{rows.length > 0 && <ExportPredictionsButton rows={exportRows} />}
-					</div>
-					<div className="flex gap-6">
-						<Stat label={t("points")} value={totalPoints} highlight />
-						<Stat label={t("exactScores")} value={exactCount} />
-						<Stat label={t("hitRate")} value={`${hitRate}%`} />
-					</div>
+		<div>
+			<Topbar eyebrow={t("eyebrow")} title={t("title")} session={session}>
+				<div className="flex gap-6">
+					<Stat label={t("points")} value={totalPoints} highlight />
+					<Stat label={t("exactScores")} value={exactCount} />
+					<Stat label={t("hitRate")} value={`${hitRate}%`} />
 				</div>
-			</div>
+				{rows.length > 0 && <ExportPredictionsButton rows={exportRows} />}
+			</Topbar>
 
-			{rows.length === 0 ? (
-				<div className="flex flex-col items-center gap-2 py-10 text-center text-muted-foreground text-sm">
-					<ClipboardListIcon className="size-6" />
-					{t("empty")}
-				</div>
-			) : (
-				<div className="overflow-hidden rounded-xl border">
-					<div className="hidden grid-cols-[100px_1fr_110px_110px_110px_90px] gap-3 border-b bg-surface-row px-5 py-2.5 font-mono text-[10px] text-muted-foreground uppercase tracking-widest sm:grid">
-						<span>{t("colGroup")}</span>
-						<span>{t("colMatch")}</span>
-						<span>{t("colYourPick")}</span>
-						<span>{t("colResult")}</span>
-						<span>{t("colStatus")}</span>
-						<span className="text-right">{t("colPoints")}</span>
+			<div className="mx-auto max-w-4xl px-5 py-8 sm:px-7">
+				{rows.length === 0 ? (
+					<div className="flex flex-col items-center gap-2 py-10 text-center text-muted-foreground text-sm">
+						<ClipboardListIcon className="size-6" />
+						{t("empty")}
 					</div>
-					{rows.map(({ prediction, match, homeTeam, awayTeam }) => (
-						<div
-							key={prediction.id}
-							className="grid grid-cols-3 items-center gap-x-3 gap-y-1.5 border-b px-5 py-3 last:border-b-0 sm:grid-cols-[100px_1fr_110px_110px_110px_90px] sm:gap-y-0 sm:py-3.5"
-						>
-							<span className="col-start-1 row-start-1 font-mono text-[11px] text-muted-foreground sm:col-start-auto sm:row-start-auto">
-								{match.groupId ?? tStages(match.stage)}
-							</span>
-							<span className="col-span-3 row-start-2 flex items-center gap-1.5 truncate font-display font-semibold text-sm sm:col-span-1 sm:col-start-auto sm:row-start-auto">
-								<TeamFlag tla={homeTeam?.tla} />
-								<span className="truncate">
-									{homeTeam?.name ?? tCommon("teamTbd")}
-								</span>
-								<span className="text-muted-foreground">{t("vs")}</span>
-								<span className="truncate">
-									{awayTeam?.name ?? tCommon("teamTbd")}
-								</span>
-								<TeamFlag tla={awayTeam?.tla} />
-							</span>
-							<span className="col-start-1 row-start-3 font-bold font-mono text-base sm:col-start-auto sm:row-start-auto">
-								{prediction.homeScoreGuess}–{prediction.awayScoreGuess}
-							</span>
-							<span className="col-start-2 row-start-3 font-bold font-mono text-base text-foreground/70 sm:col-start-auto sm:row-start-auto">
-								{match.homeScore !== null && match.awayScore !== null
-									? `${match.homeScore}–${match.awayScore}`
-									: "–"}
-							</span>
-							<span className="col-start-3 row-start-1 sm:col-start-auto sm:row-start-auto">
-								<MatchStatusBadge status={match.status} />
-							</span>
-							<span className="col-start-3 row-start-3 flex justify-end sm:col-start-auto sm:row-start-auto">
-								<PointsBadge points={prediction.pointsEarned} />
-							</span>
+				) : (
+					<div className="overflow-hidden rounded-xl border">
+						<div className="hidden grid-cols-[100px_1fr_110px_110px_110px_90px] gap-3 border-b bg-surface-row px-5 py-2.5 font-mono text-[10px] text-muted-foreground uppercase tracking-widest sm:grid">
+							<span>{t("colGroup")}</span>
+							<span>{t("colMatch")}</span>
+							<span>{t("colYourPick")}</span>
+							<span>{t("colResult")}</span>
+							<span>{t("colStatus")}</span>
+							<span className="text-right">{t("colPoints")}</span>
 						</div>
-					))}
-				</div>
-			)}
+						{rows.map(({ prediction, match, homeTeam, awayTeam }) => (
+							<div
+								key={prediction.id}
+								className="grid grid-cols-3 items-center gap-x-3 gap-y-1.5 border-b px-5 py-3 last:border-b-0 sm:grid-cols-[100px_1fr_110px_110px_110px_90px] sm:gap-y-0 sm:py-3.5"
+							>
+								<span className="col-start-1 row-start-1 font-mono text-[11px] text-muted-foreground sm:col-start-auto sm:row-start-auto">
+									{match.groupId ?? tStages(match.stage)}
+								</span>
+								<span className="col-span-3 row-start-2 flex items-center gap-1.5 truncate font-display font-semibold text-sm sm:col-span-1 sm:col-start-auto sm:row-start-auto">
+									<TeamFlag tla={homeTeam?.tla} />
+									<span className="truncate">
+										{homeTeam?.name ?? tCommon("teamTbd")}
+									</span>
+									<span className="text-muted-foreground">{t("vs")}</span>
+									<span className="truncate">
+										{awayTeam?.name ?? tCommon("teamTbd")}
+									</span>
+									<TeamFlag tla={awayTeam?.tla} />
+								</span>
+								<span className="col-start-1 row-start-3 font-bold font-mono text-base sm:col-start-auto sm:row-start-auto">
+									{prediction.homeScoreGuess}–{prediction.awayScoreGuess}
+								</span>
+								<span className="col-start-2 row-start-3 font-bold font-mono text-base text-foreground/70 sm:col-start-auto sm:row-start-auto">
+									{match.homeScore !== null && match.awayScore !== null
+										? `${match.homeScore}–${match.awayScore}`
+										: "–"}
+								</span>
+								<span className="col-start-3 row-start-1 sm:col-start-auto sm:row-start-auto">
+									<MatchStatusBadge status={match.status} />
+								</span>
+								<span className="col-start-3 row-start-3 flex justify-end sm:col-start-auto sm:row-start-auto">
+									<PointsBadge points={prediction.pointsEarned} />
+								</span>
+							</div>
+						))}
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }

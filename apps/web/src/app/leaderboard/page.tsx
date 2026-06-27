@@ -10,6 +10,7 @@ import { PointsBadge } from "@world-cup/ui/components/points-badge";
 import { cn, getInitials } from "@world-cup/ui/lib/utils";
 import { TrophyIcon } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { Topbar } from "@/components/topbar";
 import { getLeaderboard, type LeaderboardRow } from "@/lib/ranking";
 import { ScrollToHighlight } from "./scroll-to-highlight";
 
@@ -39,80 +40,83 @@ export default async function LeaderboardPage({
 	const podium = [rows[1], rows[0], rows[2]];
 
 	return (
-		<div className="mx-auto max-w-4xl px-5 py-8 sm:px-7">
+		<div>
 			{highlight && <ScrollToHighlight targetId={`player-${highlight}`} />}
 
-			<h1 className="font-display font-extrabold text-3xl">{t("title")}</h1>
-			<p className="mb-6 font-mono text-muted-foreground text-xs uppercase tracking-wide">
-				{t("subtitle", { count: rows.length })}
-			</p>
+			<Topbar eyebrow={t("eyebrow")} title={t("title")} session={session}>
+				<span className="font-mono text-[11px] text-muted-foreground uppercase tracking-wide">
+					{t("subtitle", { count: rows.length })}
+				</span>
+			</Topbar>
 
-			<div className="mb-6 rounded-xl border bg-card p-4 sm:p-5">
-				<p className="mb-3 font-mono text-[11px] text-muted-foreground uppercase tracking-widest">
-					{t("scoringTitle")}
-				</p>
-				<div className="grid gap-3 sm:grid-cols-3">
-					{SCORING_ROWS.map((row) => (
-						<div key={row.titleKey} className="flex items-start gap-2.5">
-							<PointsBadge points={row.points} />
-							<div className="flex flex-col">
-								<span className="font-display font-semibold text-sm">
-									{t(row.titleKey)}
-								</span>
-								<span className="text-muted-foreground text-xs">
-									{t(row.descKey)}
-								</span>
+			<div className="mx-auto max-w-4xl px-5 py-8 sm:px-7">
+				<div className="mb-6 rounded-xl border bg-card p-4 sm:p-5">
+					<p className="mb-3 font-mono text-[11px] text-muted-foreground uppercase tracking-widest">
+						{t("scoringTitle")}
+					</p>
+					<div className="grid gap-3 sm:grid-cols-3">
+						{SCORING_ROWS.map((row) => (
+							<div key={row.titleKey} className="flex items-start gap-2.5">
+								<PointsBadge points={row.points} />
+								<div className="flex flex-col">
+									<span className="font-display font-semibold text-sm">
+										{t(row.titleKey)}
+									</span>
+									<span className="text-muted-foreground text-xs">
+										{t(row.descKey)}
+									</span>
+								</div>
 							</div>
-						</div>
-					))}
-				</div>
-			</div>
-
-			{rows.length === 0 ? (
-				<div className="flex flex-col items-center gap-2 rounded-lg border bg-surface-row py-10 text-center text-muted-foreground text-sm">
-					<TrophyIcon className="size-6" />
-					{t("empty")}
-				</div>
-			) : (
-				<>
-					{rows.length >= 2 && (
-						<div className="mb-8 grid grid-cols-3 items-end gap-3 sm:gap-4">
-							{podium.map((entry, index) => {
-								if (!entry) return <div key={`empty-${index}`} />;
-								const rank = index === 0 ? 2 : index === 1 ? 1 : 3;
-								return (
-									<PodiumCard
-										key={entry.userId}
-										entry={entry}
-										rank={rank}
-										emphasized={rank === 1}
-										t={t}
-									/>
-								);
-							})}
-						</div>
-					)}
-
-					<div className="overflow-hidden rounded-xl border">
-						<div className="hidden grid-cols-[60px_1fr_120px_120px] gap-3 border-b bg-surface-row px-5 py-2.5 font-mono text-[10px] text-muted-foreground uppercase tracking-widest sm:grid">
-							<span>{t("colPosition")}</span>
-							<span>{t("colPlayer")}</span>
-							<span>{t("colExact")}</span>
-							<span className="text-right">{t("colPoints")}</span>
-						</div>
-						{rows.map((row, index) => (
-							<LeaderboardRowItem
-								key={row.userId}
-								row={row}
-								position={index + 1}
-								isYou={row.userId === session?.user.id}
-								isHighlighted={row.userId === highlight}
-								t={t}
-							/>
 						))}
 					</div>
-				</>
-			)}
+				</div>
+
+				{rows.length === 0 ? (
+					<div className="flex flex-col items-center gap-2 rounded-lg border bg-surface-row py-10 text-center text-muted-foreground text-sm">
+						<TrophyIcon className="size-6" />
+						{t("empty")}
+					</div>
+				) : (
+					<>
+						{rows.length >= 2 && (
+							<div className="mb-8 grid grid-cols-3 items-end gap-3 sm:gap-4">
+								{podium.map((entry, index) => {
+									if (!entry) return <div key={`empty-${index}`} />;
+									const rank = index === 0 ? 2 : index === 1 ? 1 : 3;
+									return (
+										<PodiumCard
+											key={entry.userId}
+											entry={entry}
+											rank={rank}
+											emphasized={rank === 1}
+											t={t}
+										/>
+									);
+								})}
+							</div>
+						)}
+
+						<div className="overflow-hidden rounded-xl border">
+							<div className="hidden grid-cols-[60px_1fr_120px_120px] gap-3 border-b bg-surface-row px-5 py-2.5 font-mono text-[10px] text-muted-foreground uppercase tracking-widest sm:grid">
+								<span>{t("colPosition")}</span>
+								<span>{t("colPlayer")}</span>
+								<span>{t("colExact")}</span>
+								<span className="text-right">{t("colPoints")}</span>
+							</div>
+							{rows.map((row, index) => (
+								<LeaderboardRowItem
+									key={row.userId}
+									row={row}
+									position={index + 1}
+									isYou={row.userId === session?.user.id}
+									isHighlighted={row.userId === highlight}
+									t={t}
+								/>
+							))}
+						</div>
+					</>
+				)}
+			</div>
 		</div>
 	);
 }

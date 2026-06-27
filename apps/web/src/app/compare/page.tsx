@@ -8,6 +8,7 @@ import { GitCompareIcon } from "lucide-react";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { Topbar } from "@/components/topbar";
 import { CompareMatchCard } from "./compare-match-card";
 
 const homeTeams = alias(teams, "home_teams");
@@ -72,41 +73,48 @@ export default async function ComparePage() {
 		: [];
 
 	return (
-		<div className="mx-auto max-w-4xl px-5 py-8 sm:px-7">
-			<h1 className="font-display font-extrabold text-3xl">{t("title")}</h1>
-			<p className="mb-6 text-muted-foreground text-sm">{t("subtitle")}</p>
+		<div>
+			<Topbar eyebrow={t("eyebrow")} title={t("title")} session={session}>
+				<span className="font-mono text-[11px] text-muted-foreground uppercase tracking-wide">
+					{t("subtitle")}
+				</span>
+			</Topbar>
 
-			{rows.length === 0 ? (
-				<div className="flex flex-col items-center gap-2 rounded-lg border bg-surface-row py-10 text-center text-muted-foreground text-sm">
-					<GitCompareIcon className="size-6" />
-					{t("empty")}
-				</div>
-			) : (
-				<div className="flex flex-col gap-4">
-					{rows.map(({ match, homeTeam, awayTeam }) => {
-						const picks = allPicks.filter((pick) => pick.matchId === match.id);
-						const myPick = picks.find(
-							(pick) => pick.userId === session.user.id,
-						);
-						const others = picks.filter(
-							(pick) => pick.userId !== session.user.id,
-						);
+			<div className="mx-auto max-w-4xl px-5 py-8 sm:px-7">
+				{rows.length === 0 ? (
+					<div className="flex flex-col items-center gap-2 rounded-lg border bg-surface-row py-10 text-center text-muted-foreground text-sm">
+						<GitCompareIcon className="size-6" />
+						{t("empty")}
+					</div>
+				) : (
+					<div className="flex flex-col gap-4">
+						{rows.map(({ match, homeTeam, awayTeam }) => {
+							const picks = allPicks.filter(
+								(pick) => pick.matchId === match.id,
+							);
+							const myPick = picks.find(
+								(pick) => pick.userId === session.user.id,
+							);
+							const others = picks.filter(
+								(pick) => pick.userId !== session.user.id,
+							);
 
-						return (
-							<CompareMatchCard
-								key={match.id}
-								match={match}
-								homeTeam={homeTeam}
-								awayTeam={awayTeam}
-								locked={isMatchLocked(match)}
-								myPick={myPick}
-								others={others}
-								dateFormatter={dateFormatter}
-							/>
-						);
-					})}
-				</div>
-			)}
+							return (
+								<CompareMatchCard
+									key={match.id}
+									match={match}
+									homeTeam={homeTeam}
+									awayTeam={awayTeam}
+									locked={isMatchLocked(match)}
+									myPick={myPick}
+									others={others}
+									dateFormatter={dateFormatter}
+								/>
+							);
+						})}
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }

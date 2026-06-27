@@ -26,10 +26,6 @@ export default async function MatchesPage() {
 		: [];
 
 	return (
-		<MatchesView
-			rows={rows}
-			predictions={myPredictions}
-			isLoggedIn={!!session}
-		/>
+		<MatchesView rows={rows} predictions={myPredictions} session={session} />
 	);
 }

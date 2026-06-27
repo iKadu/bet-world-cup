@@ -11,6 +11,7 @@ import { alias } from "drizzle-orm/pg-core";
 import { FlameIcon } from "lucide-react";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
+import { Topbar } from "@/components/topbar";
 import { getLeaderboard } from "@/lib/ranking";
 import { getCurrentStreak } from "@/lib/streaks";
 
@@ -107,29 +108,22 @@ export default async function Home() {
 
 	return (
 		<div>
-			<section className="relative overflow-hidden border-b px-5 py-10 sm:px-7">
-				<div className="pointer-events-none absolute top-0 left-0 size-96 rounded-full bg-accent-lime/10 blur-3xl" />
-				<div className="relative mx-auto flex max-w-4xl flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-					<div>
-						<div className="mb-3 flex items-center gap-2 font-mono text-[11px] text-accent-text uppercase tracking-widest">
-							<span>{t("eyebrowTournament")}</span>
-							<span className="text-muted-foreground">·</span>
-							<span className="text-muted-foreground">{t("eyebrowTeams")}</span>
-						</div>
-						<h1 className="font-display font-extrabold text-4xl uppercase leading-tight sm:text-5xl">
-							{session
-								? t("welcome", { name: session.user.name.split(" ")[0] })
-								: t("welcomeGuest")}
-						</h1>
-					</div>
-					{liveCount > 0 && (
-						<span className="flex shrink-0 items-center gap-2 self-start rounded-full border border-live/45 bg-live/15 px-3 py-1.5 font-mono text-[11px] text-live-foreground uppercase tracking-wide">
-							<span className="size-1.5 animate-live-pulse rounded-full bg-live" />
-							{t("liveMatches", { count: liveCount })}
-						</span>
-					)}
-				</div>
-			</section>
+			<Topbar
+				eyebrow={t("eyebrowTournament")}
+				title={
+					session
+						? t("welcome", { name: session.user.name.split(" ")[0] })
+						: t("welcomeGuest")
+				}
+				session={session}
+			>
+				{liveCount > 0 && (
+					<span className="flex shrink-0 items-center gap-2 self-start rounded-full border border-live/45 bg-live/15 px-3 py-1.5 font-mono text-[11px] text-live-foreground uppercase tracking-wide">
+						<span className="size-1.5 animate-live-pulse rounded-full bg-live" />
+						{t("liveMatches", { count: liveCount })}
+					</span>
+				)}
+			</Topbar>
 
 			<div className="mx-auto max-w-4xl px-5 py-8 sm:px-7">
 				<div className="mb-6 grid gap-4 sm:grid-cols-[1.3fr_1fr]">

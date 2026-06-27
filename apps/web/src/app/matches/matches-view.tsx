@@ -1,5 +1,6 @@
 "use client";
 
+import type { ServerSession } from "@world-cup/auth/server";
 import { isMatchLocked } from "@world-cup/db/lib/match-lock";
 import type {
 	matches as matchesTable,
@@ -22,6 +23,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
+import { Topbar } from "@/components/topbar";
 import { PredictionFormRow } from "./prediction-form-row";
 
 const STAGES = [
@@ -50,14 +52,11 @@ type PredictionRow = typeof predictionsTable.$inferSelect;
 interface MatchesViewProps {
 	rows: MatchRow[];
 	predictions: PredictionRow[];
-	isLoggedIn: boolean;
+	session: ServerSession;
 }
 
-export function MatchesView({
-	rows,
-	predictions,
-	isLoggedIn,
-}: MatchesViewProps) {
+export function MatchesView({ rows, predictions, session }: MatchesViewProps) {
+	const isLoggedIn = !!session;
 	const t = useTranslations("Matches");
 	const tStages = useTranslations("Stages");
 	const locale = useLocale();
@@ -94,16 +93,31 @@ export function MatchesView({
 			: row?.awayTeam?.name;
 	}, [rows, teamFilter]);
 
-	const filteredRows = useMemo(() => {
-		return rows.filter((row) => {
-			const matchesStage = !stageFilter || row.match.stage === stageFilter;
-			const matchesTeam =
+	const teamFilteredRows = useMemo(() => {
+		return rows.filter(
+			(row) =>
 				!teamFilter ||
 				row.homeTeam?.id === teamFilter ||
-				row.awayTeam?.id === teamFilter;
-			return matchesStage && matchesTeam;
-		});
-	}, [rows, stageFilter, teamFilter]);
+				row.awayTeam?.id === teamFilter,
+		);
+	}, [rows, teamFilter]);
+
+	const filteredRows = useMemo(() => {
+		return teamFilteredRows.filter(
+			(row) => !stageFilter || row.match.stage === stageFilter,
+		);
+	}, [teamFilteredRows, stageFilter]);
+
+	const stageCounts = useMemo(() => {
+		const counts = new Map<Stage, number>();
+		for (const stage of STAGES) {
+			counts.set(
+				stage,
+				teamFilteredRows.filter((row) => row.match.stage === stage).length,
+			);
+		}
+		return counts;
+	}, [teamFilteredRows]);
 
 	function clearTeamFilter() {
 		router.push("/matches");
@@ -118,89 +132,96 @@ export function MatchesView({
 	);
 
 	return (
-		<div className="mx-auto max-w-4xl px-5 py-8 sm:px-7">
-			<h1 className="mb-5 font-display font-extrabold text-3xl">
-				{t("title")}
-			</h1>
+		<div>
+			<Topbar eyebrow={t("eyebrow")} title={t("title")} session={session} />
 
-			{teamFilter && teamFilterName && (
-				<button
-					type="button"
-					onClick={clearTeamFilter}
-					className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 font-mono text-[11px] text-primary-foreground uppercase tracking-wide"
-				>
-					{t("filteredBy", { team: teamFilterName })}
-					<XIcon className="size-3" />
-				</button>
-			)}
+			<div className="mx-auto max-w-4xl px-5 py-8 sm:px-7">
+				{teamFilter && teamFilterName && (
+					<button
+						type="button"
+						onClick={clearTeamFilter}
+						className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 font-mono text-[11px] text-primary-foreground uppercase tracking-wide"
+					>
+						{t("filteredBy", { team: teamFilterName })}
+						<XIcon className="size-3" />
+					</button>
+				)}
 
-			<div className="mb-5 flex flex-wrap gap-2">
-				<StageChip
-					label={tStages("all")}
-					active={stageFilter === null}
-					onClick={() => setStageFilter(null)}
-				/>
-				{STAGES.map((stage) => (
+				<p className="mb-2 font-mono text-[11px] text-muted-foreground uppercase tracking-widest">
+					{t("roundLabel")}
+				</p>
+				<div className="mb-5 flex flex-wrap gap-2">
 					<StageChip
-						key={stage}
-						label={tStages(stage)}
-						active={stageFilter === stage}
-						onClick={() => setStageFilter(stage)}
+						label={tStages("all")}
+						count={teamFilteredRows.length}
+						active={stageFilter === null}
+						onClick={() => setStageFilter(null)}
 					/>
-				))}
-			</div>
+					{STAGES.map((stage) => (
+						<StageChip
+							key={stage}
+							label={tStages(stage)}
+							count={stageCounts.get(stage) ?? 0}
+							active={stageFilter === stage}
+							onClick={() => setStageFilter(stage)}
+						/>
+					))}
+				</div>
 
-			<Tabs defaultValue="upcoming">
-				<TabsList>
-					<TabsTrigger value="upcoming" className="gap-2">
-						{t("tabUpcoming")}
-						<CountPill count={upcoming.length} kind="neutral" />
-					</TabsTrigger>
-					<TabsTrigger value="live" className="gap-2">
-						{t("tabLive")}
-						<CountPill count={live.length} kind="live" />
-					</TabsTrigger>
-					<TabsTrigger value="finished" className="gap-2">
-						{t("tabFinished")}
-						<CountPill count={finished.length} kind="neutral" />
-					</TabsTrigger>
-				</TabsList>
-				<TabsContent value="upcoming" className="mt-3">
-					<MatchRows
-						rows={upcoming}
-						predictionsByMatchId={predictionsByMatchId}
-						isLoggedIn={isLoggedIn}
-						editable
-						dateFormatter={dateFormatter}
-					/>
-				</TabsContent>
-				<TabsContent value="live" className="mt-3">
-					<MatchRows
-						rows={live}
-						predictionsByMatchId={predictionsByMatchId}
-						isLoggedIn={isLoggedIn}
-						dateFormatter={dateFormatter}
-					/>
-				</TabsContent>
-				<TabsContent value="finished" className="mt-3">
-					<MatchRows
-						rows={finished}
-						predictionsByMatchId={predictionsByMatchId}
-						isLoggedIn={isLoggedIn}
-						dateFormatter={dateFormatter}
-					/>
-				</TabsContent>
-			</Tabs>
+				<Tabs defaultValue="upcoming">
+					<TabsList>
+						<TabsTrigger value="upcoming" className="gap-2">
+							{t("tabUpcoming")}
+							<CountPill count={upcoming.length} kind="neutral" />
+						</TabsTrigger>
+						<TabsTrigger value="live" className="gap-2">
+							{t("tabLive")}
+							<CountPill count={live.length} kind="live" />
+						</TabsTrigger>
+						<TabsTrigger value="finished" className="gap-2">
+							{t("tabFinished")}
+							<CountPill count={finished.length} kind="neutral" />
+						</TabsTrigger>
+					</TabsList>
+					<TabsContent value="upcoming" className="mt-3">
+						<MatchRows
+							rows={upcoming}
+							predictionsByMatchId={predictionsByMatchId}
+							isLoggedIn={isLoggedIn}
+							editable
+							dateFormatter={dateFormatter}
+						/>
+					</TabsContent>
+					<TabsContent value="live" className="mt-3">
+						<MatchRows
+							rows={live}
+							predictionsByMatchId={predictionsByMatchId}
+							isLoggedIn={isLoggedIn}
+							dateFormatter={dateFormatter}
+						/>
+					</TabsContent>
+					<TabsContent value="finished" className="mt-3">
+						<MatchRows
+							rows={finished}
+							predictionsByMatchId={predictionsByMatchId}
+							isLoggedIn={isLoggedIn}
+							dateFormatter={dateFormatter}
+						/>
+					</TabsContent>
+				</Tabs>
+			</div>
 		</div>
 	);
 }
 
 function StageChip({
 	label,
+	count,
 	active,
 	onClick,
 }: {
 	label: string;
+	count: number;
 	active: boolean;
 	onClick: () => void;
 }) {
@@ -209,13 +230,14 @@ function StageChip({
 			type="button"
 			onClick={onClick}
 			className={cn(
-				"rounded-full px-3 py-1.5 font-mono text-[11px] uppercase tracking-wide transition-colors",
+				"flex items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-[11px] uppercase tracking-wide transition-colors",
 				active
 					? "bg-primary text-primary-foreground"
 					: "bg-surface-soft text-muted-foreground hover:text-foreground",
 			)}
 		>
 			{label}
+			<span className={cn(active ? "opacity-80" : "opacity-60")}>{count}</span>
 		</button>
 	);
 }

@@ -7,8 +7,9 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import "../index.css";
 import { CommandPalette } from "@/components/command-palette";
-import Header from "@/components/header";
 import Providers from "@/components/providers";
+import { Sidebar } from "@/components/sidebar";
+import { getSidebarData } from "@/lib/sidebar-data";
 
 const sairaCondensed = Saira_Condensed({
 	variable: "--font-display",
@@ -60,6 +61,7 @@ export default async function RootLayout({
 }>) {
 	const locale = await getLocale();
 	const session = await getServerSession();
+	const sidebarData = await getSidebarData(session);
 
 	return (
 		<html lang={locale} suppressHydrationWarning>
@@ -68,9 +70,9 @@ export default async function RootLayout({
 			>
 				<NextIntlClientProvider>
 					<Providers>
-						<div className="grid min-h-svh grid-rows-[auto_1fr] bg-background">
-							<Header session={session} />
-							{children}
+						<div className="flex min-h-svh bg-background">
+							<Sidebar session={session} data={sidebarData} />
+							<div className="min-w-0 flex-1">{children}</div>
 						</div>
 						<CommandPalette isAdmin={session?.user.role === "admin"} />
 					</Providers>

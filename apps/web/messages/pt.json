@@ -14,7 +14,12 @@
 		"signUp": "Cadastrar",
 		"openMenu": "Abrir menu",
 		"navCompare": "Comparar",
-		"search": "Buscar"
+		"search": "Buscar",
+		"navGroupMenu": "Menu",
+		"navGroupCompete": "Disputa",
+		"navGroupAdmin": "Admin",
+		"liveNow": "{count, plural, one {# jogo ao vivo} other {# jogos ao vivo}}",
+		"rankPoints": "#{rank} · {points} pts"
 	},
 	"Metadata": {
 		"title": "WC26 Predictor",
@@ -29,6 +34,7 @@
 	},
 	"Compare": {
 		"title": "Comparar palpites",
+		"eyebrow": "Comunidade",
 		"subtitle": "Veja o que a galera apostou nos próximos jogos e nos que estão rolando agora.",
 		"empty": "Nenhuma partida disponível para comparação no momento.",
 		"lockedMessage": "Dê seu palpite primeiro para destravar a comparação com os outros participantes.",
@@ -88,6 +94,8 @@
 	},
 	"Matches": {
 		"title": "Partidas",
+		"eyebrow": "Calendário",
+		"roundLabel": "Rodada",
 		"tabUpcoming": "Próximos",
 		"tabLive": "Em andamento",
 		"tabFinished": "Finalizados",
@@ -110,6 +118,7 @@
 	},
 	"Predictions": {
 		"title": "Minhas previsões",
+		"eyebrow": "Seu desempenho",
 		"points": "Pontos",
 		"exactScores": "Placares exatos",
 		"hitRate": "Taxa de acerto",
@@ -125,6 +134,7 @@
 	},
 	"Leaderboard": {
 		"title": "Ranking global",
+		"eyebrow": "Temporada 2026",
 		"subtitle": "{count, plural, one {# participante} other {# participantes}} · uma única tabela",
 		"empty": "Ainda não há usuários cadastrados.",
 		"leaderTag": "★ Líder",
@@ -171,6 +181,7 @@
 	},
 	"AdminSync": {
 		"title": "Sincronização de dados",
+		"eyebrow": "Painel administrativo",
 		"subtitle": "Importa times, grupos, partidas e resultados da football-data.org.",
 		"apiConfigured": "API configurada",
 		"lastSync": "Última sync: {time}",
