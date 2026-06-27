@@ -24,6 +24,12 @@ import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getCommandPaletteIndex } from "@/lib/command-palette-data";
 
+const OPEN_EVENT = "wc26:open-command-palette";
+
+export function openCommandPalette() {
+	window.dispatchEvent(new Event(OPEN_EVENT));
+}
+
 type PaletteItem =
 	| {
 			type: "page";
@@ -60,9 +66,16 @@ export function CommandPalette({ isAdmin }: CommandPaletteProps) {
 				setOpen((value) => !value);
 			}
 		}
+		function handleOpenRequest() {
+			setOpen(true);
+		}
 
 		document.addEventListener("keydown", handleKeyDown);
-		return () => document.removeEventListener("keydown", handleKeyDown);
+		window.addEventListener(OPEN_EVENT, handleOpenRequest);
+		return () => {
+			document.removeEventListener("keydown", handleKeyDown);
+			window.removeEventListener(OPEN_EVENT, handleOpenRequest);
+		};
 	}, []);
 
 	useEffect(() => {

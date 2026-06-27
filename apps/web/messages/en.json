@@ -13,7 +13,8 @@
 		"signIn": "Sign in",
 		"signUp": "Sign up",
 		"openMenu": "Open menu",
-		"navCompare": "Compare"
+		"navCompare": "Compare",
+		"search": "Search"
 	},
 	"Metadata": {
 		"title": "WC26 Predictor",

@@ -15,10 +15,12 @@ import {
 	DropdownMenuTrigger,
 } from "@world-cup/ui/components/dropdown-menu";
 import { cn, getInitials } from "@world-cup/ui/lib/utils";
+import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
+import { openCommandPalette } from "./command-palette";
 import { LanguageSwitcher } from "./language-switcher";
 import { MobileNav } from "./mobile-nav";
 import { ModeToggle } from "./mode-toggle";
@@ -87,6 +89,22 @@ export default function Header({ session }: HeaderProps) {
 					</nav>
 					<MobileNav navLinks={navLinks} />
 				</div>
+				<button
+					type="button"
+					onClick={openCommandPalette}
+					className="hidden max-w-sm flex-1 items-center gap-2.5 rounded-lg border bg-card px-3 py-2 text-muted-foreground text-sm transition-colors hover:text-foreground sm:flex"
+				>
+					<SearchIcon className="size-4 shrink-0" />
+					<span className="flex-1 text-left">{t("search")}</span>
+					<span className="flex shrink-0 gap-1">
+						<kbd className="rounded-md border bg-surface-row px-1.5 py-0.5 font-mono text-[10px]">
+							Ctrl
+						</kbd>
+						<kbd className="rounded-md border bg-surface-row px-1.5 py-0.5 font-mono text-[10px]">
+							Space
+						</kbd>
+					</span>
+				</button>
 				<div className="flex items-center gap-2.5">
 					<LanguageSwitcher />
 					<ModeToggle />
